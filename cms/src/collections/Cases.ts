@@ -56,6 +56,23 @@ export const Cases: CollectionConfig = {
         description: '1–2 frases exibidas no card da landing.',
       },
     },
+    {
+      name: 'imageUrl',
+      type: 'text',
+      label: 'URL da imagem (card)',
+      admin: {
+        description: 'Imagem 16:9 do case na home. URL externa ou caminho público.',
+      },
+    },
+    {
+      name: 'image',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Imagem do case (upload)',
+      admin: {
+        description: 'Prioridade sobre a URL, se preenchido. Preferir proporção 16:9.',
+      },
+    },
     markdownField({
       name: 'body',
       label: 'Texto completo (Markdown)',

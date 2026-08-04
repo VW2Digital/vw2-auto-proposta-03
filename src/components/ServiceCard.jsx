@@ -75,7 +75,7 @@ export default function ServiceCard({
       transition={{ duration: 0.35, delay: Math.min(index * 0.04, 0.35) }}
       onClick={onToggle}
       aria-pressed={selected}
-      className={`group relative flex h-full w-full flex-col items-start rounded-3xl border p-6 text-left transition-all duration-300 ${
+      className={`group relative flex h-full w-full flex-col items-start justify-between rounded-3xl border p-5 text-left transition-all duration-300 sm:p-6 ${
         selected
           ? 'border-ink bg-ink text-white shadow-xl shadow-black/15 -translate-y-1'
           : 'card-soft text-ink hover:-translate-y-1 hover:shadow-lg hover:shadow-indigo-500/10'
@@ -87,28 +87,16 @@ export default function ServiceCard({
         </span>
       )}
 
-      <span
-        className={`flex h-11 w-11 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-110 ${
-          selected ? 'bg-white text-ink' : 'bg-ink text-white'
-        }`}
-      >
-        <Icon size={20} strokeWidth={1.75} />
-      </span>
-
       <h3
-        className={`mt-5 text-sm font-bold tracking-wide uppercase leading-snug ${
+        className={`pr-8 text-sm font-bold tracking-wide uppercase leading-snug ${
           selected ? 'text-white' : 'text-ink'
         }`}
       >
         {service.title}
       </h3>
 
-      <p className={`mt-2 text-sm leading-relaxed ${selected ? 'text-white/65' : 'text-muted'}`}>
-        {service.description}
-      </p>
-
       <span
-        className={`mt-5 text-[11px] font-semibold tracking-wider uppercase ${
+        className={`mt-4 text-[11px] font-semibold tracking-wider uppercase ${
           selected ? 'text-white/70' : 'text-muted-light group-hover:text-ink'
         }`}
       >

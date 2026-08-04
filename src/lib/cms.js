@@ -164,6 +164,7 @@ export const cms = {
         resultLabel: c.resultLabel,
         description: c.description,
         body: c.body || '',
+        image: mediaUrl(c.image) || c.imageUrl || '',
         metrics: c.metrics || [],
       }))
     } catch {

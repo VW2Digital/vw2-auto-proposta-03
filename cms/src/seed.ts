@@ -477,6 +477,8 @@ const casesSeed = [
     resultLabel: 'em contatos qualificados',
     description:
       'Reestruturação completa de funil com tráfego pago, páginas de captura e CRM integrado.',
+    imageUrl:
+      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80',
     bodyFile: 'novatech.md',
     metrics: [
       { label: 'Custo por cliente', value: '-42%' },
@@ -493,6 +495,8 @@ const casesSeed = [
     resultLabel: 'em faturamento digital',
     description:
       'Identidade visual renovada, gestão de mídias e campanhas sazonais de alto impacto.',
+    imageUrl:
+      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80',
     bodyFile: 'casa-aurora.md',
     metrics: [
       { label: 'Engajamento', value: '+156%' },
@@ -509,6 +513,8 @@ const casesSeed = [
     resultLabel: 'em agendamentos',
     description:
       'Google Meu Negócio, bot de WhatsApp e conteúdo audiovisual para autoridade local.',
+    imageUrl:
+      'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80',
     bodyFile: 'clinica-vitalis.md',
     metrics: [
       { label: 'Avaliações', value: '4.9★' },
@@ -525,6 +531,8 @@ const casesSeed = [
     resultLabel: 'em visitas qualificadas',
     description:
       'Estratégia digital + sites de captura + treinamento de atendimento comercial.',
+    imageUrl:
+      'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80',
     bodyFile: 'atlas-imoveis.md',
     metrics: [
       { label: 'Contatos/mês', value: '890+' },

@@ -19,7 +19,7 @@ export default function SelectedProjects() {
 
   return (
     <section id="projetos" className="scroll-mt-20 bg-black py-20 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8">
         <div className="mb-10 flex items-end justify-between gap-4 sm:mb-12">
           <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
             Projetos Selecionados

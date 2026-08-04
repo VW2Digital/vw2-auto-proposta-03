@@ -364,6 +364,14 @@ export interface Case {
    */
   description: string;
   /**
+   * Imagem 16:9 do case na home. URL externa ou caminho público.
+   */
+  imageUrl?: string | null;
+  /**
+   * Prioridade sobre a URL, se preenchido. Preferir proporção 16:9.
+   */
+  image?: (number | null) | Media;
+  /**
    * Use o template em cms/content/templates/case.md. Markdown: títulos, listas, negrito.
    */
   body?: string | null;
@@ -783,6 +791,8 @@ export interface CasesSelect<T extends boolean = true> {
   result?: T;
   resultLabel?: T;
   description?: T;
+  imageUrl?: T;
+  image?: T;
   body?: T;
   metrics?:
     | T

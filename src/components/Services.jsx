@@ -2,10 +2,21 @@ import { useProposalStore } from '../store/proposalStore'
 import { useServices } from '../hooks/useServices'
 import ServiceCard from './ServiceCard'
 
+function splitIntoColumns(items) {
+  const n = items.length
+  const leftCount = Math.floor(n / 3)
+  const midCount = Math.ceil(n / 3)
+  const left = items.slice(0, leftCount)
+  const middle = items.slice(leftCount, leftCount + midCount)
+  const right = items.slice(leftCount + midCount)
+  return [left, middle, right]
+}
+
 export default function Services() {
   const services = useServices()
   const selectedServices = useProposalStore((s) => s.selectedServices)
   const toggleService = useProposalStore((s) => s.toggleService)
+  const columns = splitIntoColumns(services)
 
   return (
     <section id="servicos" className="relative scroll-mt-20 overflow-hidden bg-surface-2 py-24 sm:py-28">
@@ -24,18 +35,26 @@ export default function Services() {
           </p>
         </div>
 
-        <ul className="mx-auto mt-14 grid max-w-5xl grid-cols-1 border-t border-line md:grid-cols-2 md:gap-x-10">
-          {services.map((service, index) => (
-            <ServiceCard
-              key={service.id}
-              service={service}
-              index={index}
-              variant="list"
-              selected={Boolean(selectedServices[service.id])}
-              onToggle={() => toggleService(service.id)}
-            />
+        <div className="mx-auto mt-14 grid max-w-6xl grid-cols-1 gap-x-8 border-t border-line md:grid-cols-3">
+          {columns.map((column, colIndex) => (
+            <ul key={colIndex} className="min-w-0">
+              {column.map((service, rowIndex) => {
+                const index =
+                  columns.slice(0, colIndex).reduce((sum, col) => sum + col.length, 0) + rowIndex
+                return (
+                  <ServiceCard
+                    key={service.id}
+                    service={service}
+                    index={index}
+                    variant="list"
+                    selected={Boolean(selectedServices[service.id])}
+                    onToggle={() => toggleService(service.id)}
+                  />
+                )
+              })}
+            </ul>
           ))}
-        </ul>
+        </div>
       </div>
     </section>
   )
