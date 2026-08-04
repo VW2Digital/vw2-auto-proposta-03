@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --color-ink: #0a0a0a;
+  --color-ink-soft: #1a1a1a;
+  --color-muted: #6b7280;
+  --color-muted-light: #9ca3af;
+  --color-surface: #f5f5f5;
+  --color-surface-2: #fafafa;
+  --color-line: #e8e8e8;
+  --color-accent-blue: #4f6ef7;
+  --color-accent-purple: #8b5cf6;
+  --color-accent-magenta: #c084fc;
+  --color-available: #22c55e;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: color-mix(in srgb, #8b5cf6 28%, transparent);
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.btn-h {
+  height: 40px;
+}
+
+.input-h {
+  height: 40px;
+}
+
+/* Organic mesh blob for hero */
+.mesh-blob {
+  background:
+    radial-gradient(ellipse 80% 70% at 60% 40%, #6d8cff 0%, transparent 55%),
+    radial-gradient(ellipse 70% 80% at 35% 55%, #a78bfa 0%, transparent 50%),
+    radial-gradient(ellipse 60% 60% at 70% 70%, #e879f9 0%, transparent 45%),
+    radial-gradient(ellipse 50% 50% at 45% 30%, #60a5fa 0%, transparent 40%);
+  filter: blur(8px);
+  opacity: 0.95;
+}
+
+.mesh-glow {
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139, 92, 246, 0.22), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 30% 60%, rgba(96, 165, 250, 0.18), transparent 65%),
+    radial-gradient(ellipse 45% 45% at 70% 40%, rgba(232, 121, 249, 0.15), transparent 60%);
+}
+
+.card-soft {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 1px 2px rgba(15, 15, 15, 0.04),
+    0 12px 32px -12px rgba(99, 102, 241, 0.12);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 999px;
+}
