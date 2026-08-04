@@ -37,7 +37,7 @@ function mapProject(p) {
     tall: Boolean(p.tall),
     image: p.imageUrl || mediaUrl(p.image),
     description: p.description || '',
-    body: p.body || '',
+    blocks: mapBlocks(p.blocks),
     gallery: (p.gallery || [])
       .map((g) => ({
         image: g.imageUrl || mediaUrl(g.image),
@@ -46,6 +46,69 @@ function mapProject(p) {
       }))
       .filter((g) => g.image),
   }
+}
+
+function mapBlocks(blocks) {
+  if (!Array.isArray(blocks)) return []
+  return blocks
+    .map((b) => {
+      if (!b?.blockType) return null
+      if (b.blockType === 'image') {
+        return {
+          id: b.id,
+          blockType: b.blockType,
+          image: mediaUrl(b.image) || b.imageUrl || '',
+          imageUrl: mediaUrl(b.image) || b.imageUrl || '',
+          alt: b.alt || '',
+          caption: b.caption || '',
+          wide: Boolean(b.wide),
+        }
+      }
+      if (b.blockType === 'text') {
+        return { id: b.id, blockType: 'text', content: b.content || '' }
+      }
+      if (b.blockType === 'heading') {
+        return {
+          id: b.id,
+          blockType: 'heading',
+          text: b.text || '',
+          level: b.level || 'h2',
+        }
+      }
+      if (b.blockType === 'video') {
+        return {
+          id: b.id,
+          blockType: 'video',
+          videoUrl: b.videoUrl || '',
+          caption: b.caption || '',
+        }
+      }
+      if (b.blockType === 'button') {
+        return {
+          id: b.id,
+          blockType: 'button',
+          label: b.label || '',
+          url: b.url || '#',
+          style: b.style || 'primary',
+        }
+      }
+      if (b.blockType === 'link') {
+        return {
+          id: b.id,
+          blockType: 'link',
+          label: b.label || '',
+          url: b.url || '#',
+        }
+      }
+      if (b.blockType === 'divider') {
+        return { id: b.id, blockType: 'divider' }
+      }
+      if (b.blockType === 'module') {
+        return { id: b.id, blockType: 'module', module: b.module }
+      }
+      return { ...b }
+    })
+    .filter(Boolean)
 }
 
 export const cms = {
@@ -72,6 +135,17 @@ export const cms = {
       )
       const doc = data.docs?.[0]
       return doc ? mapProject(doc) : null
+    } catch {
+      return null
+    }
+  },
+
+  async getHomePage() {
+    try {
+      const data = await api('/api/globals/home-page?depth=1')
+      return {
+        blocks: mapBlocks(data.blocks),
+      }
     } catch {
       return null
     }
@@ -150,15 +224,18 @@ export const cms = {
     try {
       const data = await api('/api/globals/hero?depth=1')
       const media = data.media || {}
+      const legacyTitle =
+        data.headlineSerif || data.headlineBold
+          ? `*${data.headlineSerif || ''}*\n\n**${data.headlineBold || ''}**`.trim()
+          : ''
       return {
         tags: (data.tags || []).map((t) => t.label).filter(Boolean),
-        headlineSerif: data.headlineSerif,
-        headlineBold: data.headlineBold,
+        title: data.title || legacyTitle || '',
         subtitle: data.subtitle,
         ctaLabel: data.ctaLabel,
-        ctaTarget: data.ctaTarget || '#proposta',
+        ctaLink: data.ctaLink || data.ctaTarget || '#proposta',
         image: mediaUrl(media.image) || media.imageUrl || '',
-        height: Number(media.height) || 100,
+        height: Number(media.height) || 85,
         objectPosition: media.objectPosition || 'center',
       }
     } catch {
@@ -168,15 +245,28 @@ export const cms = {
 
   async getTrustBar() {
     try {
-      const data = await api('/api/globals/trust-bar')
+      const data = await api('/api/globals/trust-bar?depth=1')
+      const legacyText =
+        data.line1Stat || data.line2Stat
+          ? [
+              [data.line1Prefix, data.line1Stat && `**${data.line1Stat}**`, data.line1Suffix]
+                .filter(Boolean)
+                .join(' '),
+              [data.line2Prefix, data.line2Stat && `**${data.line2Stat}**`, data.line2Suffix]
+                .filter(Boolean)
+                .join(' '),
+            ]
+              .filter(Boolean)
+              .join('\n')
+          : ''
       return {
-        line1Prefix: data.line1Prefix,
-        line1Stat: data.line1Stat,
-        line1Suffix: data.line1Suffix,
-        line2Prefix: data.line2Prefix,
-        line2Stat: data.line2Stat,
-        line2Suffix: data.line2Suffix,
-        logos: (data.logos || []).map((l) => l.name).filter(Boolean),
+        text: data.text || legacyText || '',
+        logos: (data.logos || [])
+          .map((l) => ({
+            name: l.name || '',
+            image: mediaUrl(l.image) || l.imageUrl || '',
+          }))
+          .filter((l) => l.name || l.image),
       }
     } catch {
       return null

@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { cms } from '../lib/cms'
+import { Markdown } from './Markdown'
+import { useCmsContent } from '../hooks/useCmsContent'
 
 const fallback = {
   tags: ['Design Inteligente', 'Experiências', 'Estratégia', 'Marca'],
-  headlineSerif: 'Design criativo',
-  headlineBold: 'ESTRATÉGIA',
+  title:
+    '<span style="color:#ffffff">*Design criativo*</span>\n\n<span style="color:#ffffff">**ESTRATÉGIA**</span>',
   subtitle:
     'Monte sua proposta personalizada em minutos e impulsione o crescimento do seu negócio.',
   ctaLabel: 'Vamos conversar',
-  ctaTarget: '#proposta',
+  ctaLink: '#proposta',
   image: '/hero-team.png?v=3',
-  height: 100,
+  height: 85,
   objectPosition: 'center',
 }
 
@@ -29,34 +30,39 @@ function WhatsAppIcon({ size = 20 }) {
   )
 }
 
-export default function Hero() {
-  const [content, setContent] = useState(fallback)
+function isExternalLink(href) {
+  return /^(https?:|mailto:|tel:|wa\.me)/i.test(href || '')
+}
 
-  useEffect(() => {
-    let active = true
-    cms.getHero().then((remote) => {
-      if (active && remote?.headlineSerif) {
-        setContent({
-          ...fallback,
-          ...remote,
-          image: remote.image || fallback.image,
-          height: remote.height || fallback.height,
-          objectPosition: remote.objectPosition || fallback.objectPosition,
-        })
-      }
-    })
-    return () => {
-      active = false
-    }
-  }, [])
-
-  const goCta = () => {
-    document.querySelector(content.ctaTarget || '#proposta')?.scrollIntoView({
-      behavior: 'smooth',
-    })
+async function fetchHero() {
+  const remote = await cms.getHero()
+  if (!remote?.title) return null
+  return {
+    tags: remote.tags?.length ? remote.tags : fallback.tags,
+    title: remote.title || fallback.title,
+    subtitle: remote.subtitle || fallback.subtitle,
+    ctaLabel: remote.ctaLabel || fallback.ctaLabel,
+    ctaLink: remote.ctaLink || fallback.ctaLink,
+    image: remote.image || fallback.image,
+    height: remote.height || fallback.height,
+    objectPosition: remote.objectPosition || fallback.objectPosition,
   }
+}
 
-  const heightVh = Math.min(100, Math.max(50, content.height || 100))
+export default function Hero() {
+  const { content } = useCmsContent('nexo:hero', fetchHero, {
+    fallback,
+    isValid: (data) => Boolean(data?.title),
+  })
+
+  const heightVh = Math.min(100, Math.max(50, content?.height || fallback.height))
+  const ctaHref = content?.ctaLink || fallback.ctaLink
+
+  const goCta = (e) => {
+    if (!ctaHref.startsWith('#')) return
+    e.preventDefault()
+    document.querySelector(ctaHref)?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <section
@@ -71,10 +77,10 @@ export default function Hero() {
         aria-hidden
       >
         <img
-          src={content.image}
+          src={content?.image || fallback.image}
           alt=""
           className="h-full w-full object-cover"
-          style={{ objectPosition: content.objectPosition || 'center' }}
+          style={{ objectPosition: content?.objectPosition || fallback.objectPosition }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/35" />
       </motion.div>
@@ -83,47 +89,55 @@ export default function Hero() {
         className="relative z-10 mx-auto flex max-w-7xl flex-col justify-end px-4 sm:px-6 lg:px-8"
         style={{ minHeight: `calc(${heightVh}svh - 8rem)` }}
       >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55 }}
-          className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-12"
-        >
-          <div className="min-w-0 max-w-3xl">
-            <div className="flex flex-wrap gap-2">
-              {content.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-medium text-white backdrop-blur-sm"
-                >
-                  {tag}
-                </span>
-              ))}
+        {content ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55 }}
+            className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-12"
+          >
+            <div className="min-w-0 max-w-3xl">
+              <div className="flex flex-wrap gap-2">
+                {content.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-medium text-white backdrop-blur-sm"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              <div className="hero-title mt-6">
+                <Markdown content={content.title} className="hero-md" />
+              </div>
+
+              <p className="mt-5 max-w-md text-base text-white/70 sm:text-lg">
+                {content.subtitle}
+              </p>
             </div>
 
-            <h1 className="mt-6 leading-[0.92]">
-              <span className="block font-serif text-5xl font-medium tracking-tight text-white italic sm:text-6xl lg:text-7xl">
-                {content.headlineSerif}
-              </span>
-              <span className="mt-1 block text-5xl font-black tracking-tight text-white uppercase sm:text-6xl lg:text-7xl xl:text-8xl">
-                {content.headlineBold}
-              </span>
-            </h1>
-
-            <p className="mt-5 max-w-md text-base text-white/70 sm:text-lg">
-              {content.subtitle}
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={goCta}
-            className="inline-flex h-14 shrink-0 items-center gap-2.5 self-start rounded-full bg-[#25D366] px-8 text-base font-semibold text-black shadow-lg shadow-[#25D366]/25 transition hover:scale-[1.03] hover:bg-[#1ebe57] active:scale-[0.98] lg:self-end"
+            <a
+              href={ctaHref}
+              onClick={goCta}
+              target={isExternalLink(ctaHref) ? '_blank' : undefined}
+              rel={isExternalLink(ctaHref) ? 'noreferrer' : undefined}
+              className="inline-flex h-14 shrink-0 items-center gap-2.5 self-start rounded-full bg-[#25D366] px-8 text-base font-semibold text-black shadow-lg shadow-[#25D366]/25 transition hover:scale-[1.03] hover:bg-[#1ebe57] active:scale-[0.98] lg:self-end"
+            >
+              <WhatsAppIcon size={22} />
+              {content.ctaLabel}
+            </a>
+          </motion.div>
+        ) : (
+          <div
+            className="flex min-h-[12rem] flex-col justify-end gap-4 opacity-40"
+            aria-hidden
           >
-            <WhatsAppIcon size={22} />
-            {content.ctaLabel}
-          </button>
-        </motion.div>
+            <div className="h-8 w-64 max-w-full rounded-full bg-white/15" />
+            <div className="h-16 w-full max-w-xl rounded-2xl bg-white/10" />
+            <div className="h-16 w-3/4 max-w-lg rounded-2xl bg-white/10" />
+          </div>
+        )}
       </div>
     </section>
   )

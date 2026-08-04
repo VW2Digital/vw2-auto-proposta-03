@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import Header from './components/Header'
+import LivePreviewBridge from './components/LivePreviewBridge'
 import Home from './pages/Home'
 import Projects from './pages/Projects'
 import ProjectDetail from './pages/ProjectDetail'
@@ -23,6 +24,7 @@ function AppShell() {
         <Route path="/preview" element={<Preview />} />
         <Route path="/proposta/:token" element={<ClientProposal />} />
       </Routes>
+      <LivePreviewBridge />
     </>
   )
 }

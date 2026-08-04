@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { AlertCircle, CheckCircle2, Lock, MessageCircle, ShieldCheck } from 'lucide-react'
 import { cms } from '../lib/cms'
-import { Markdown } from '../components/Markdown'
+import PageBlocks from '../components/PageBlocks'
 import Logo from '../components/Logo'
 
 function authKey(token) {
@@ -187,13 +187,17 @@ export default function ClientProposal() {
             </h1>
             <p className="mt-1 text-sm text-muted">Olá, {proposal.fullName}.</p>
 
-            {proposal.formalMessage && (
+            {proposal.contentBlocks?.length > 0 && (
               <div className="mt-8 rounded-3xl border border-line bg-surface p-6">
                 <p className="text-xs font-semibold tracking-wide text-muted uppercase">
                   Mensagem da Nexo Studio
                 </p>
                 <div className="mt-3">
-                  <Markdown content={proposal.formalMessage} />
+                  <PageBlocks
+                    blocks={proposal.contentBlocks}
+                    variant="light"
+                    apiUrl={cms.apiUrl}
+                  />
                 </div>
               </div>
             )}

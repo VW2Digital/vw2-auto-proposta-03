@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { pageBlocksField } from '../fields/pageBlocks'
 import { proposalPreview } from '../lib/preview'
 
 export const Proposals: CollectionConfig = {
@@ -92,16 +93,12 @@ export const Proposals: CollectionConfig = {
               label: 'Investimento proposto',
               admin: { description: 'Ex.: R$ 8.500 / mês' },
             },
-            {
-              name: 'formalMessage',
-              type: 'textarea',
-              label: 'Mensagem para o cliente (Markdown)',
-              admin: {
-                description:
-                  'Texto exibido na página do cliente. Use cms/content/templates/proposta.md.',
-                rows: 20,
-              },
-            },
+            pageBlocksField({
+              name: 'contentBlocks',
+              label: 'Conteúdo da página do cliente',
+              description:
+                'Monte a proposta com texto, imagem, vídeo, botão e link. Arraste para organizar.',
+            }),
             {
               name: 'formalNotes',
               type: 'textarea',

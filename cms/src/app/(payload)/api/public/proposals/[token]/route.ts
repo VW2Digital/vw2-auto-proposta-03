@@ -26,6 +26,7 @@ export async function POST(
     collection: 'proposals',
     where: { accessToken: { equals: token } },
     limit: 1,
+    depth: 1,
     overrideAccess: true,
   })
 
@@ -51,7 +52,7 @@ export async function POST(
       status: proposal.status,
       services: proposal.services,
       formalPrice: proposal.formalPrice,
-      formalMessage: proposal.formalMessage,
+      contentBlocks: proposal.contentBlocks || [],
       sentAt: proposal.sentAt,
       clientResponse: proposal.clientResponse,
       negotiateMessage: proposal.negotiateMessage,

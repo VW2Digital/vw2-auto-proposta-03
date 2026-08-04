@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, ArrowUpRight } from 'lucide-react'
 import Footer from '../components/Footer'
-import { Markdown } from '../components/Markdown'
+import PageBlocks from '../components/PageBlocks'
 import { cms } from '../lib/cms'
 
 export default function ProjectDetail() {
@@ -105,16 +105,17 @@ export default function ProjectDetail() {
                 </motion.div>
               )}
 
-              {project.body && (
+              {project.blocks?.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.45, delay: 0.12 }}
-                  className="mx-auto mt-14 max-w-2xl"
+                  className="mt-14"
                 >
-                  <Markdown
-                    content={project.body}
-                    className="prose-invert text-white/70 [&_blockquote]:border-white/20 [&_blockquote]:text-white/55 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_strong]:text-white"
+                  <PageBlocks
+                    blocks={project.blocks}
+                    variant="dark"
+                    apiUrl={cms.apiUrl}
                   />
                 </motion.div>
               )}

@@ -704,9 +704,16 @@ async function seed() {
 
   await seedIfEmpty(payload, 'services', servicesSeed, 'serviços')
 
-  // Projetos: cria ou atualiza com slug, texto e galeria
+  // Projetos: cria ou atualiza com slug, blocos e galeria
   let projectsTouched = 0
   for (const item of projectsSeed) {
+    const { body, ...rest } = item as typeof item & { body?: string }
+    const data = {
+      ...rest,
+      blocks: body
+        ? [{ blockType: 'text' as const, content: body }]
+        : [],
+    }
     const found = await payload.find({
       collection: 'projects',
       where: {
@@ -720,11 +727,11 @@ async function seed() {
     })
     if (found.docs[0]) {
       const doc = found.docs[0]
-      if (!doc.slug || !doc.body || !(doc.gallery as unknown[])?.length) {
+      if (!doc.slug || !doc.blocks?.length || !(doc.gallery as unknown[])?.length) {
         await payload.update({
           collection: 'projects',
           id: doc.id,
-          data: item,
+          data,
           overrideAccess: true,
         })
         projectsTouched += 1
@@ -732,7 +739,7 @@ async function seed() {
     } else {
       await payload.create({
         collection: 'projects',
-        data: item,
+        data,
         overrideAccess: true,
       })
       projectsTouched += 1
@@ -777,13 +784,16 @@ async function seed() {
   if (existingProposals.totalDocs === 0) {
     for (const item of proposalsSeed) {
       const { formalMessageFile, ...rest } = item
+      const message = formalMessageFile
+        ? readMd('proposals', formalMessageFile)
+        : ''
       const created = await payload.create({
         collection: 'proposals',
         data: {
           ...rest,
-          formalMessage: formalMessageFile
-            ? readMd('proposals', formalMessageFile)
-            : undefined,
+          contentBlocks: message
+            ? [{ blockType: 'text', content: message }]
+            : [],
           sentAt: rest.status === 'enviada' ? new Date().toISOString() : undefined,
         },
         overrideAccess: true,
@@ -804,7 +814,7 @@ async function seed() {
     data: {
       media: {
         imageUrl: hero?.media?.imageUrl || '/hero-team.png',
-        height: hero?.media?.height ?? 100,
+        height: hero?.media?.height ?? 85,
         objectPosition: hero?.media?.objectPosition || 'center',
       },
       tags: hero?.tags?.length
@@ -815,43 +825,63 @@ async function seed() {
             { label: 'Estratégia' },
             { label: 'Marca' },
           ],
-      headlineSerif: hero?.headlineSerif || 'Design criativo',
-      headlineBold: hero?.headlineBold || 'ESTRATÉGIA',
+      title:
+        hero?.title ||
+        '<span style="color:#ffffff">*Design criativo*</span>\n\n<span style="color:#ffffff">**ESTRATÉGIA**</span>',
       subtitle:
         hero?.subtitle ||
         'Monte sua proposta personalizada em minutos e impulsione o crescimento do seu negócio.',
       ctaLabel: hero?.ctaLabel || 'Vamos conversar',
-      ctaTarget: hero?.ctaTarget || '#proposta',
+      ctaLink: hero?.ctaLink || hero?.ctaTarget || '#proposta',
     },
     overrideAccess: true,
   })
-  console.log('✓ Hero global atualizado (foto + altura)')
+  console.log('✓ Hero global atualizado (foto + título markdown + link)')
 
   const trust = await payload.findGlobal({ slug: 'trust-bar', overrideAccess: true })
-  if (!trust?.logos?.length) {
-    await payload.updateGlobal({
-      slug: 'trust-bar',
-      data: {
-        line1Prefix: 'Junte-se a',
-        line1Stat: '5.000+',
-        line1Suffix: 'membros satisfeitos.',
-        line2Prefix: 'Confiado por',
-        line2Stat: '5.000+',
-        line2Suffix: 'times.',
-        logos: [
-          { name: 'Kerala' },
-          { name: 'Dean Tadnai' },
-          { name: 'Root Media' },
-          { name: 'Altitude' },
-          { name: 'Northline' },
-        ],
-      },
-      overrideAccess: true,
-    })
-    console.log('✓ Trust Bar global criado')
-  } else {
-    console.log('• Trust Bar já existe — pulando')
+  const trustData = trust as Record<string, unknown> & {
+    text?: string
+    logos?: { name: string; imageUrl?: string; image?: unknown }[]
+    line1Prefix?: string
+    line1Stat?: string
+    line1Suffix?: string
+    line2Prefix?: string
+    line2Stat?: string
+    line2Suffix?: string
   }
+  const trustLegacyText =
+    trustData.line1Stat || trustData.line2Stat
+      ? [
+          [trustData.line1Prefix, trustData.line1Stat && `**${trustData.line1Stat}**`, trustData.line1Suffix]
+            .filter(Boolean)
+            .join(' '),
+          [trustData.line2Prefix, trustData.line2Stat && `**${trustData.line2Stat}**`, trustData.line2Suffix]
+            .filter(Boolean)
+            .join(' '),
+        ]
+          .filter(Boolean)
+          .join('\n')
+      : ''
+  await payload.updateGlobal({
+    slug: 'trust-bar',
+    data: {
+      text:
+        trustData.text ||
+        trustLegacyText ||
+        'Junte-se a **5.000+** membros satisfeitos.\nConfiado por **5.000+** times.',
+      logos: trustData.logos?.length
+        ? trustData.logos
+        : [
+            { name: 'Kerala' },
+            { name: 'Dean Tadnai' },
+            { name: 'Root Media' },
+            { name: 'Altitude' },
+            { name: 'Northline' },
+          ],
+    },
+    overrideAccess: true,
+  })
+  console.log('✓ Trust Bar global atualizado (texto markdown + logos)')
 
   const video = await payload.findGlobal({ slug: 'video-section', overrideAccess: true })
   // Sempre sincroniza para o schema enxuto (só URL)
@@ -863,6 +893,31 @@ async function seed() {
     overrideAccess: true,
   })
   console.log('✓ Seção de Vídeo atualizada (somente URL)')
+
+  const home = await payload.findGlobal({ slug: 'home-page', overrideAccess: true })
+  if (!home?.blocks?.length) {
+    await payload.updateGlobal({
+      slug: 'home-page',
+      data: {
+        blocks: [
+          { blockType: 'module', module: 'trustBar' },
+          { blockType: 'module', module: 'video' },
+          { blockType: 'module', module: 'whoWeHelp' },
+          { blockType: 'module', module: 'selectedProjects' },
+          { blockType: 'module', module: 'services' },
+          { blockType: 'module', module: 'cases' },
+          { blockType: 'module', module: 'howItWorks' },
+          { blockType: 'module', module: 'proposal' },
+          { blockType: 'module', module: 'testimonials' },
+          { blockType: 'module', module: 'finalCta' },
+        ],
+      },
+      overrideAccess: true,
+    })
+    console.log('✓ Home page builder criado (seções padrão)')
+  } else {
+    console.log('• Home page já tem blocos — pulando')
+  }
 
   console.log('\nSeed concluído. Admin: http://localhost:3000/admin')
   process.exit(0)

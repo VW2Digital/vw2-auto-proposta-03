@@ -103,11 +103,13 @@ export interface Config {
     hero: Hero;
     'trust-bar': TrustBar;
     'video-section': VideoSection;
+    'home-page': HomePage;
   };
   globalsSelect: {
     hero: HeroSelect<false> | HeroSelect<true>;
     'trust-bar': TrustBarSelect<false> | TrustBarSelect<true>;
     'video-section': VideoSectionSelect<false> | VideoSectionSelect<true>;
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
   };
   locale: null;
   widgets: {
@@ -217,9 +219,75 @@ export interface Project {
    */
   description?: string | null;
   /**
-   * Contexto, desafio, solução e resultados. Use Markdown.
+   * Monte a página do projeto: texto, imagem, vídeo, botão, link… Arraste para organizar.
    */
-  body?: string | null;
+  blocks?:
+    | (
+        | {
+            /**
+             * Títulos, listas, negrito, cor e tamanho.
+             */
+            content: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'text';
+          }
+        | {
+            text: string;
+            level?: ('h1' | 'h2' | 'h3') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'heading';
+          }
+        | {
+            imageUrl?: string | null;
+            image?: (number | null) | Media;
+            alt?: string | null;
+            caption?: string | null;
+            wide?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'image';
+          }
+        | {
+            /**
+             * YouTube, Vimeo ou arquivo .mp4
+             */
+            videoUrl: string;
+            caption?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'video';
+          }
+        | {
+            label: string;
+            /**
+             * URL completa ou âncora (ex.: #proposta).
+             */
+            url: string;
+            style?: ('primary' | 'secondary' | 'whatsapp') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'button';
+          }
+        | {
+            label: string;
+            url: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'link';
+          }
+        | {
+            /**
+             * Só para organização no admin — não aparece no site.
+             */
+            note?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'divider';
+          }
+      )[]
+    | null;
   gallery?:
     | {
         imageUrl?: string | null;
@@ -377,9 +445,75 @@ export interface Proposal {
    */
   formalPrice?: string | null;
   /**
-   * Texto exibido na página do cliente. Use cms/content/templates/proposta.md.
+   * Monte a proposta com texto, imagem, vídeo, botão e link. Arraste para organizar.
    */
-  formalMessage?: string | null;
+  contentBlocks?:
+    | (
+        | {
+            /**
+             * Títulos, listas, negrito, cor e tamanho.
+             */
+            content: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'text';
+          }
+        | {
+            text: string;
+            level?: ('h1' | 'h2' | 'h3') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'heading';
+          }
+        | {
+            imageUrl?: string | null;
+            image?: (number | null) | Media;
+            alt?: string | null;
+            caption?: string | null;
+            wide?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'image';
+          }
+        | {
+            /**
+             * YouTube, Vimeo ou arquivo .mp4
+             */
+            videoUrl: string;
+            caption?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'video';
+          }
+        | {
+            label: string;
+            /**
+             * URL completa ou âncora (ex.: #proposta).
+             */
+            url: string;
+            style?: ('primary' | 'secondary' | 'whatsapp') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'button';
+          }
+        | {
+            label: string;
+            url: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'link';
+          }
+        | {
+            /**
+             * Só para organização no admin — não aparece no site.
+             */
+            note?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'divider';
+          }
+      )[]
+    | null;
   /**
    * Só para a equipe — não aparece para o cliente.
    */
@@ -548,7 +682,68 @@ export interface ProjectsSelect<T extends boolean = true> {
   imageUrl?: T;
   image?: T;
   description?: T;
-  body?: T;
+  blocks?:
+    | T
+    | {
+        text?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        heading?:
+          | T
+          | {
+              text?: T;
+              level?: T;
+              id?: T;
+              blockName?: T;
+            };
+        image?:
+          | T
+          | {
+              imageUrl?: T;
+              image?: T;
+              alt?: T;
+              caption?: T;
+              wide?: T;
+              id?: T;
+              blockName?: T;
+            };
+        video?:
+          | T
+          | {
+              videoUrl?: T;
+              caption?: T;
+              id?: T;
+              blockName?: T;
+            };
+        button?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              style?: T;
+              id?: T;
+              blockName?: T;
+            };
+        link?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              id?: T;
+              blockName?: T;
+            };
+        divider?:
+          | T
+          | {
+              note?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
   gallery?:
     | T
     | {
@@ -648,7 +843,68 @@ export interface ProposalsSelect<T extends boolean = true> {
         id?: T;
       };
   formalPrice?: T;
-  formalMessage?: T;
+  contentBlocks?:
+    | T
+    | {
+        text?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        heading?:
+          | T
+          | {
+              text?: T;
+              level?: T;
+              id?: T;
+              blockName?: T;
+            };
+        image?:
+          | T
+          | {
+              imageUrl?: T;
+              image?: T;
+              alt?: T;
+              caption?: T;
+              wide?: T;
+              id?: T;
+              blockName?: T;
+            };
+        video?:
+          | T
+          | {
+              videoUrl?: T;
+              caption?: T;
+              id?: T;
+              blockName?: T;
+            };
+        button?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              style?: T;
+              id?: T;
+              blockName?: T;
+            };
+        link?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              id?: T;
+              blockName?: T;
+            };
+        divider?:
+          | T
+          | {
+              note?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
   formalNotes?: T;
   clientResponse?: T;
   negotiateMessage?: T;
@@ -731,14 +987,16 @@ export interface Hero {
         id?: string | null;
       }[]
     | null;
-  headlineSerif: string;
-  headlineBold: string;
+  /**
+   * O site renderiza este Markdown de verdade: *itálico*, **negrito**, # H1–### H3, cor e tamanho (px). Selecione o texto e use a barra.
+   */
+  title: string;
   subtitle: string;
   ctaLabel: string;
   /**
-   * Ex.: #proposta
+   * URL completa (ex.: https://wa.me/55...) ou âncora da página (ex.: #proposta).
    */
-  ctaTarget?: string | null;
+  ctaLink?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -750,15 +1008,24 @@ export interface Hero {
  */
 export interface TrustBar {
   id: number;
-  line1Prefix: string;
-  line1Stat: string;
-  line1Suffix: string;
-  line2Prefix: string;
-  line2Stat: string;
-  line2Suffix: string;
+  /**
+   * Use Markdown. Ex.: **negrito** para destaques, *itálico*, quebras de linha.
+   */
+  text: string;
   logos?:
     | {
+        /**
+         * Nome da marca (alt da imagem ou texto se não houver logo).
+         */
         name: string;
+        /**
+         * URL externa ou caminho público (ex.: /logos/marca.svg).
+         */
+        imageUrl?: string | null;
+        /**
+         * Prioridade sobre a URL, se preenchido.
+         */
+        image?: (number | null) | Media;
         id?: string | null;
       }[]
     | null;
@@ -781,6 +1048,106 @@ export interface VideoSection {
   createdAt?: string | null;
 }
 /**
+ * Monte a home com blocos: seções prontas (serviços, cases…) + texto, imagem, vídeo, botão e link.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page".
+ */
+export interface HomePage {
+  id: number;
+  /**
+   * Arraste para reordenar. Use “Seção do site” para módulos prontos, ou adicione texto/imagem/vídeo/botão/link.
+   */
+  blocks?:
+    | (
+        | {
+            /**
+             * Insere uma seção pronta da home (arraste para reordenar).
+             */
+            module:
+              | 'trustBar'
+              | 'video'
+              | 'whoWeHelp'
+              | 'selectedProjects'
+              | 'services'
+              | 'cases'
+              | 'howItWorks'
+              | 'proposal'
+              | 'testimonials'
+              | 'finalCta';
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'module';
+          }
+        | {
+            /**
+             * Títulos, listas, negrito, cor e tamanho.
+             */
+            content: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'text';
+          }
+        | {
+            text: string;
+            level?: ('h1' | 'h2' | 'h3') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'heading';
+          }
+        | {
+            imageUrl?: string | null;
+            image?: (number | null) | Media;
+            alt?: string | null;
+            caption?: string | null;
+            wide?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'image';
+          }
+        | {
+            /**
+             * YouTube, Vimeo ou arquivo .mp4
+             */
+            videoUrl: string;
+            caption?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'video';
+          }
+        | {
+            label: string;
+            /**
+             * URL completa ou âncora (ex.: #proposta).
+             */
+            url: string;
+            style?: ('primary' | 'secondary' | 'whatsapp') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'button';
+          }
+        | {
+            label: string;
+            url: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'link';
+          }
+        | {
+            /**
+             * Só para organização no admin — não aparece no site.
+             */
+            note?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'divider';
+          }
+      )[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "hero_select".
  */
@@ -799,11 +1166,10 @@ export interface HeroSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
-  headlineSerif?: T;
-  headlineBold?: T;
+  title?: T;
   subtitle?: T;
   ctaLabel?: T;
-  ctaTarget?: T;
+  ctaLink?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -813,16 +1179,13 @@ export interface HeroSelect<T extends boolean = true> {
  * via the `definition` "trust-bar_select".
  */
 export interface TrustBarSelect<T extends boolean = true> {
-  line1Prefix?: T;
-  line1Stat?: T;
-  line1Suffix?: T;
-  line2Prefix?: T;
-  line2Stat?: T;
-  line2Suffix?: T;
+  text?: T;
   logos?:
     | T
     | {
         name?: T;
+        imageUrl?: T;
+        image?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -835,6 +1198,84 @@ export interface TrustBarSelect<T extends boolean = true> {
  */
 export interface VideoSectionSelect<T extends boolean = true> {
   videoUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page_select".
+ */
+export interface HomePageSelect<T extends boolean = true> {
+  blocks?:
+    | T
+    | {
+        module?:
+          | T
+          | {
+              module?: T;
+              id?: T;
+              blockName?: T;
+            };
+        text?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        heading?:
+          | T
+          | {
+              text?: T;
+              level?: T;
+              id?: T;
+              blockName?: T;
+            };
+        image?:
+          | T
+          | {
+              imageUrl?: T;
+              image?: T;
+              alt?: T;
+              caption?: T;
+              wide?: T;
+              id?: T;
+              blockName?: T;
+            };
+        video?:
+          | T
+          | {
+              videoUrl?: T;
+              caption?: T;
+              id?: T;
+              blockName?: T;
+            };
+        button?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              style?: T;
+              id?: T;
+              blockName?: T;
+            };
+        link?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              id?: T;
+              blockName?: T;
+            };
+        divider?:
+          | T
+          | {
+              note?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

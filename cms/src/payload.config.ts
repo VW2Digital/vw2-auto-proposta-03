@@ -17,6 +17,7 @@ import { Audiences } from './collections/Audiences'
 import { Hero } from './globals/Hero'
 import { TrustBar } from './globals/TrustBar'
 import { VideoSection } from './globals/VideoSection'
+import { HomePage } from './globals/HomePage'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -34,6 +35,9 @@ export default buildConfig({
     },
     importMap: {
       baseDir: path.resolve(dirname),
+    },
+    components: {
+      actions: ['/components/RefreshPreviewButton#RefreshPreviewButton'],
     },
     livePreview: {
       breakpoints: [
@@ -53,7 +57,7 @@ export default buildConfig({
     Testimonials,
     Proposals,
   ],
-  globals: [Hero, TrustBar, VideoSection],
+  globals: [Hero, TrustBar, VideoSection, HomePage],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || 'nexo-dev-secret-change-me-in-production',
   typescript: {
@@ -77,8 +81,8 @@ export default buildConfig({
         client: {
           url: databaseUrl || 'file:./data/nexo.db',
         },
-        // Seed reuses an existing DB; pushing again can collide on indexes.
-        push: process.env.SEED !== '1',
+        // Interactive drizzle prompts hang the API; enable with SCHEMA_PUSH=1 when needed.
+        push: process.env.SCHEMA_PUSH === '1',
       }),
   sharp,
 })

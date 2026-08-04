@@ -40,7 +40,7 @@ export default function Header() {
               handleAnchor('#proposta')
             }
           }}
-          className="hidden items-center gap-2.5 rounded-full border border-black/8 bg-white/80 py-1.5 pr-4 pl-1.5 shadow-sm backdrop-blur-md transition hover:bg-white sm:inline-flex"
+          className="hidden items-center gap-2.5 rounded-full border border-white/10 bg-[#2a2a2a] py-1.5 pr-4 pl-1.5 shadow-sm backdrop-blur-md transition hover:bg-[#333] sm:inline-flex"
         >
           <span className="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-full">
             <img
@@ -48,10 +48,10 @@ export default function Header() {
               alt=""
               className="h-full w-full object-cover"
             />
-            <span className="absolute right-0 bottom-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-available" />
+            <span className="absolute right-0 bottom-0 h-2.5 w-2.5 rounded-full border-2 border-[#2a2a2a] bg-available" />
           </span>
-          <span className="text-xs font-medium text-ink">
-            Agende 30 min <span className="text-muted">•</span>{' '}
+          <span className="text-xs font-medium text-white">
+            Agende 30 min <span className="text-white/40">•</span>{' '}
             <span className="text-available">Disponível agora</span>
           </span>
         </Link>
@@ -67,7 +67,7 @@ export default function Header() {
             onClick={() => setOpen((v) => !v)}
             className={`btn-h inline-flex items-center gap-2 rounded-full px-5 text-sm font-medium transition ${
               isDark
-                ? 'bg-white text-ink hover:bg-white/90'
+                ? 'border border-white/10 bg-[#2a2a2a] text-white hover:bg-[#333]'
                 : 'bg-ink text-white hover:bg-ink-soft'
             }`}
           >

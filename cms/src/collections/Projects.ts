@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { pageBlocksField } from '../fields/pageBlocks'
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173'
 
@@ -91,15 +92,12 @@ export const Projects: CollectionConfig = {
         description: '1–2 frases na listagem e no topo da página.',
       },
     },
-    {
-      name: 'body',
-      type: 'textarea',
-      label: 'Texto completo (Markdown)',
-      admin: {
-        description: 'Contexto, desafio, solução e resultados. Use Markdown.',
-        rows: 16,
-      },
-    },
+    pageBlocksField({
+      name: 'blocks',
+      label: 'Conteúdo da página',
+      description:
+        'Monte a página do projeto: texto, imagem, vídeo, botão, link… Arraste para organizar.',
+    }),
     {
       name: 'gallery',
       type: 'array',

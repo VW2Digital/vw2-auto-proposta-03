@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { markdownField } from '../fields/markdownField'
 import { sitePreview } from '../lib/preview'
 
 export const Cases: CollectionConfig = {
@@ -55,16 +56,15 @@ export const Cases: CollectionConfig = {
         description: '1–2 frases exibidas no card da landing.',
       },
     },
-    {
+    markdownField({
       name: 'body',
-      type: 'textarea',
       label: 'Texto completo (Markdown)',
       admin: {
         description:
           'Use o template em cms/content/templates/case.md. Markdown: títulos, listas, negrito.',
         rows: 18,
       },
-    },
+    }),
     {
       name: 'metrics',
       type: 'array',

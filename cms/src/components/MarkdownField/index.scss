@@ -1,0 +1,176 @@
+.nexo-md {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.nexo-md__toolbar {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  align-self: flex-start;
+  max-width: 100%;
+  padding: 4px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--theme-elevation-0) 88%, transparent);
+  border: 1px solid var(--theme-elevation-150);
+  box-shadow:
+    0 1px 2px color-mix(in srgb, #000 6%, transparent),
+    0 8px 20px color-mix(in srgb, #000 8%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.nexo-md__divider {
+  width: 1px;
+  height: 18px;
+  margin: 0 4px;
+  background: var(--theme-elevation-150);
+  flex-shrink: 0;
+}
+
+.nexo-md__btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--theme-text);
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.nexo-md__btn:hover,
+.nexo-md__btn:focus-visible {
+  background: var(--theme-elevation-100);
+  outline: none;
+}
+
+.nexo-md__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.nexo-md__btn--italic {
+  font-style: italic;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 500;
+}
+
+.nexo-md__btn--code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.nexo-md__control {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 32px;
+  padding: 0 4px;
+  border-radius: 8px;
+}
+
+.nexo-md__color {
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.nexo-md__color::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+.nexo-md__color::-webkit-color-swatch {
+  border: 0;
+  border-radius: 5px;
+}
+
+.nexo-md__size {
+  width: 52px;
+  height: 28px;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: 8px;
+  background: var(--theme-input-bg);
+  color: var(--theme-text);
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.nexo-md__size:focus {
+  outline: none;
+  border-color: var(--theme-success-500, #3b82f6);
+}
+
+.nexo-md__size-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--theme-text);
+  width: 24px;
+  height: 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.nexo-md__size-btn:hover {
+  background: var(--theme-elevation-100);
+}
+
+.nexo-md__size-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.nexo-md__unit {
+  font-size: 11px;
+  color: var(--theme-elevation-500);
+  padding-right: 4px;
+}
+
+.nexo-md__textarea {
+  width: 100%;
+  min-height: 6.5rem;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  padding: 0.75rem 0.875rem;
+  border-radius: 8px;
+  border: 1px solid var(--theme-elevation-150);
+  background: var(--theme-input-bg);
+  color: var(--theme-text);
+}
+
+.nexo-md__textarea:focus {
+  outline: none;
+  border-color: var(--theme-success-500, #3b82f6);
+  box-shadow: 0 0 0 1px var(--theme-success-500, #3b82f6);
+}
+
+.nexo-md__hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--theme-elevation-500);
+}

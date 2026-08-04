@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { markdownField } from '../fields/markdownField'
 
 export const Hero: GlobalConfig = {
   slug: 'hero',
@@ -39,7 +40,7 @@ export const Hero: GlobalConfig = {
           name: 'height',
           type: 'number',
           label: 'Altura do hero (vh)',
-          defaultValue: 100,
+          defaultValue: 85,
           min: 50,
           max: 100,
           admin: {
@@ -71,20 +72,19 @@ export const Hero: GlobalConfig = {
         { label: 'Marca' },
       ],
     },
-    {
-      name: 'headlineSerif',
-      type: 'text',
+    markdownField({
+      name: 'title',
       required: true,
-      label: 'Título (serif / itálico)',
-      defaultValue: 'Design criativo',
-    },
-    {
-      name: 'headlineBold',
-      type: 'text',
-      required: true,
-      label: 'Título (bold / uppercase)',
-      defaultValue: 'ESTRATÉGIA',
-    },
+      label: 'Título (Markdown)',
+      defaultColor: '#ffffff',
+      defaultValue:
+        '<span style="color:#ffffff">*Design criativo*</span>\n\n<span style="color:#ffffff">**ESTRATÉGIA**</span>',
+      admin: {
+        description:
+          'O site renderiza este Markdown de verdade: *itálico*, **negrito**, # H1–### H3, cor e tamanho (px). Selecione o texto e use a barra.',
+        rows: 6,
+      },
+    }),
     {
       name: 'subtitle',
       type: 'textarea',
@@ -101,11 +101,14 @@ export const Hero: GlobalConfig = {
       defaultValue: 'Vamos conversar',
     },
     {
-      name: 'ctaTarget',
+      name: 'ctaLink',
       type: 'text',
-      label: 'Âncora do botão',
+      label: 'Link do botão',
       defaultValue: '#proposta',
-      admin: { description: 'Ex.: #proposta' },
+      admin: {
+        description:
+          'URL completa (ex.: https://wa.me/55...) ou âncora da página (ex.: #proposta).',
+      },
     },
   ],
 }

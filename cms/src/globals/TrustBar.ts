@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { markdownField } from '../fields/markdownField'
 
 export const TrustBar: GlobalConfig = {
   slug: 'trust-bar',
@@ -13,70 +14,51 @@ export const TrustBar: GlobalConfig = {
     read: () => true,
   },
   fields: [
-    {
-      type: 'row',
-      fields: [
-        {
-          name: 'line1Prefix',
-          type: 'text',
-          required: true,
-          label: 'Linha 1 — prefixo',
-          defaultValue: 'Junte-se a',
-          admin: { width: '33%' },
-        },
-        {
-          name: 'line1Stat',
-          type: 'text',
-          required: true,
-          label: 'Destaque',
-          defaultValue: '5.000+',
-          admin: { width: '33%' },
-        },
-        {
-          name: 'line1Suffix',
-          type: 'text',
-          required: true,
-          label: 'Sufixo',
-          defaultValue: 'membros satisfeitos.',
-          admin: { width: '33%' },
-        },
-      ],
-    },
-    {
-      type: 'row',
-      fields: [
-        {
-          name: 'line2Prefix',
-          type: 'text',
-          required: true,
-          label: 'Linha 2 — prefixo',
-          defaultValue: 'Confiado por',
-          admin: { width: '33%' },
-        },
-        {
-          name: 'line2Stat',
-          type: 'text',
-          required: true,
-          label: 'Destaque',
-          defaultValue: '5.000+',
-          admin: { width: '33%' },
-        },
-        {
-          name: 'line2Suffix',
-          type: 'text',
-          required: true,
-          label: 'Sufixo',
-          defaultValue: 'times.',
-          admin: { width: '33%' },
-        },
-      ],
-    },
+    markdownField({
+      name: 'text',
+      required: true,
+      label: 'Texto (Markdown)',
+      defaultValue:
+        'Junte-se a **5.000+** membros satisfeitos.\nConfiado por **5.000+** times.',
+      admin: {
+        description:
+          'Use Markdown. Ex.: **negrito** para destaques, *itálico*, quebras de linha.',
+        rows: 4,
+      },
+    }),
     {
       name: 'logos',
       type: 'array',
       label: 'Logos / marcas',
       labels: { singular: 'Logo', plural: 'Logos' },
-      fields: [{ name: 'name', type: 'text', required: true, label: 'Nome' }],
+      fields: [
+        {
+          name: 'name',
+          type: 'text',
+          required: true,
+          label: 'Nome',
+          admin: {
+            description: 'Nome da marca (alt da imagem ou texto se não houver logo).',
+          },
+        },
+        {
+          name: 'imageUrl',
+          type: 'text',
+          label: 'URL do logo',
+          admin: {
+            description: 'URL externa ou caminho público (ex.: /logos/marca.svg).',
+          },
+        },
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'Upload do logo',
+          admin: {
+            description: 'Prioridade sobre a URL, se preenchido.',
+          },
+        },
+      ],
       defaultValue: [
         { name: 'Kerala' },
         { name: 'Dean Tadnai' },
