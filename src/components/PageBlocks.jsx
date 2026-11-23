@@ -230,7 +230,7 @@ function Block({ block, onDark, apiUrl, proseMax }) {
   }
 }
 
-/** Normaliza blocos da API Payload para o renderer. */
+/** Normaliza blocos da API do CMS para o renderer. */
 export function mapPageBlocks(blocks, apiUrl = '') {
   if (!Array.isArray(blocks)) return []
   return blocks

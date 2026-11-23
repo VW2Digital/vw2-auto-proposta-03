@@ -1,0 +1,47 @@
+<?php
+
+return [
+    'accepted' => 'O campo :attribute deve ser aceito.',
+    'active_url' => 'O campo :attribute deve ser uma URL válida.',
+    'alpha_dash' => 'O campo :attribute deve conter apenas letras, números, traços e sublinhados.',
+    'array' => 'O campo :attribute deve ser uma lista.',
+    'boolean' => 'O campo :attribute deve ser verdadeiro ou falso.',
+    'confirmed' => 'A confirmação de :attribute não confere.',
+    'date' => 'O campo :attribute deve ser uma data válida.',
+    'email' => 'O campo :attribute deve ser um e-mail válido.',
+    'exists' => 'O :attribute selecionado é inválido.',
+    'file' => 'O campo :attribute deve ser um arquivo.',
+    'image' => 'O campo :attribute deve ser uma imagem.',
+    'in' => 'O :attribute selecionado é inválido.',
+    'integer' => 'O campo :attribute deve ser um número inteiro.',
+    'max' => [
+        'array' => 'O campo :attribute não pode ter mais de :max itens.',
+        'file' => 'O arquivo :attribute não pode ter mais de :max kilobytes.',
+        'numeric' => 'O campo :attribute não pode ser maior que :max.',
+        'string' => 'O campo :attribute não pode ter mais de :max caracteres.',
+    ],
+    'mimes' => 'O campo :attribute deve ser um arquivo do tipo: :values.',
+    'mimetypes' => 'O campo :attribute deve ser um arquivo do tipo: :values.',
+    'min' => [
+        'array' => 'O campo :attribute deve ter pelo menos :min itens.',
+        'file' => 'O arquivo :attribute deve ter pelo menos :min kilobytes.',
+        'numeric' => 'O campo :attribute deve ser pelo menos :min.',
+        'string' => 'O campo :attribute deve ter pelo menos :min caracteres.',
+    ],
+    'numeric' => 'O campo :attribute deve ser um número.',
+    'regex' => 'O formato de :attribute é inválido.',
+    'required' => 'O campo :attribute é obrigatório.',
+    'string' => 'O campo :attribute deve ser um texto.',
+    'unique' => 'Este :attribute já está em uso.',
+    'url' => 'O campo :attribute deve ser uma URL válida.',
+    'uuid' => 'O campo :attribute deve ser um UUID válido.',
+
+    'attributes' => [
+        'email' => 'e-mail',
+        'password' => 'senha',
+        'name' => 'nome',
+        'title' => 'título',
+        'slug' => 'slug',
+        'description' => 'descrição',
+    ],
+];

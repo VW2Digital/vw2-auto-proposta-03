@@ -5,13 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:cms": "npm run dev --prefix cms",
+    "dev:cms": "php cms-laravel/artisan serve --port=8000",
     "build": "vite build",
-    "build:cms": "npm run build --prefix cms",
     "lint": "oxlint",
     "preview": "vite preview",
-    "db:up": "docker compose up -d",
-    "db:down": "docker compose down"
+    "build:cms": "npm run build --prefix cms-laravel"
   },
   "dependencies": {
     "framer-motion": "^12.43.0",

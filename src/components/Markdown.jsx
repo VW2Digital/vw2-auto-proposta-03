@@ -47,37 +47,6 @@ function attrsToInlineStyle(attrs) {
   return styles.join(';')
 }
 
-function parseLegacyStyleAttrs(raw) {
-  const out = {}
-  for (const part of String(raw || '').split(';')) {
-    const idx = part.indexOf(':')
-    if (idx === -1) continue
-    const key = part.slice(0, idx).trim()
-    const value = part.slice(idx + 1).trim()
-    if (key === 'color') {
-      const color = sanitizeCssColor(value)
-      if (color) out.color = color
-    }
-    if (key === 'size') {
-      const size = sanitizeCssSize(value)
-      if (size) out.size = size
-    }
-  }
-  return out
-}
-
-function expandLegacyStyleMarkers(text) {
-  return String(text || '').replace(
-    /\{([^{}]+)\}([\s\S]*?)\{\/\}/g,
-    (_, raw, inner) => {
-      const attrs = parseLegacyStyleAttrs(raw)
-      const css = attrsToInlineStyle(attrs)
-      if (!css) return inner
-      return `<span style="${css}">${inner}</span>`
-    },
-  )
-}
-
 function parseSpanStyleAttr(attrText) {
   const styleMatch = String(attrText).match(/\bstyle\s*=\s*("([^"]*)"|'([^']*)')/i)
   const styleRaw = styleMatch ? styleMatch[2] || styleMatch[3] || '' : ''
@@ -105,7 +74,7 @@ function parseSpanStyleAttr(attrText) {
  */
 function extractSafeSpans(text) {
   const tokens = []
-  let expanded = expandLegacyStyleMarkers(String(text || ''))
+  let expanded = String(text || '')
   let prev = ''
   while (expanded !== prev) {
     prev = expanded
