@@ -1,85 +1,77 @@
-# Nexo Studio — Site + Payload CMS
+# Nexo Studio — Site + CMS Laravel
 
-Landing React + plataforma de propostas. Tudo gerenciado no **Payload Admin**.
+Landing React + plataforma de propostas. Todo o conteúdo é gerido no **Nexo CMS** (Laravel + Filament).
 
 ## Stack
 
 | Camada | Tecnologia |
 |---|---|
-| Site | React + Vite + Tailwind |
-| CMS / Admin | Payload CMS 3 (Next.js) |
-| Banco (dev) | SQLite (`cms/data/nexo.db`) |
-| Banco (opcional) | PostgreSQL via Docker Compose |
+| Site | React + Vite + Tailwind (`/`) |
+| CMS / Admin / API | Laravel 13 + Filament 5 (`cms-laravel/`) |
+| Banco (dev) | SQLite (`cms-laravel/database/database.sqlite`) |
+| Legado | Payload CMS (`cms/`) — só usado como origem da importação |
 
 ## Como rodar
 
-### Site
-```bash
-npm install
-npm run dev
-```
-→ http://localhost:5173
+Requisitos: PHP 8.3+, Composer, Node 20+.
 
-### CMS
+### CMS (primeira vez)
 ```bash
-cd cms
-npm install
-npm run dev
-```
-→ Admin: http://localhost:3000/admin  
-→ Preview: http://localhost:5173/preview
-
-### Popular conteúdo (igual ao site)
-```bash
-cd cms && npm run seed
+cd cms-laravel
+composer install
+npm install && npm run build
+cp .env.example .env   # ajuste ADMIN_EMAIL / ADMIN_PASSWORD
+php artisan key:generate
+php artisan migrate
+php artisan storage:link
+php artisan filament:assets
+php artisan db:seed      # cria o admin e importa tudo do Payload (cms/data/nexo.db)
 ```
 
-## Collections (espelham o site)
+### Dia a dia
+```bash
+npm run dev:cms   # → http://localhost:8000/admin
+npm run dev       # → http://localhost:5173
+```
 
-| Coleção | Uso |
+## O que tem no admin
+
+| Menu | Uso |
 |---|---|
-| **Services** | Serviços + montagem de proposta (`slug` = id) |
-| **Projects** | Portfólio masonry |
-| **Cases** | Cards + texto longo em Markdown |
-| **Audiences** | Quem ajudamos |
-| **Testimonials** | Depoimentos |
-| **Proposals** | Solicitações do site → formalização → link do cliente |
+| **Painel** | Indicadores de propostas, gráfico mensal, atalhos e últimas propostas |
+| **Comercial → Propostas** | Lista com abas por status, filtros, ações rápidas, “Enviar ao cliente”, WhatsApp |
+| **Comercial → Quadro** | Kanban: arraste o card entre colunas para mudar o status |
+| **Páginas → Home** | Monta a home com seções prontas + blocos livres (texto, imagem, vídeo, botão, link) |
+| **Páginas → Hero / Trust Bar / Vídeo** | Seções fixas da home, com pré-visualização do site |
+| **Conteúdo do site** | Serviços, Projetos (page builder + galeria), Cases, Quem ajudamos, Depoimentos — reordenáveis por arrastar |
+| **Sistema** | Biblioteca de mídia e usuários |
 
-## Globals (seções da home)
+Extras: busca global (⌘K), modo escuro, editor Markdown com cor/tamanho e visualização lado a lado.
 
-| Global | Seção |
+## API (consumida pelo site)
+
+`VITE_API_URL=http://localhost:8000`
+
+| Método | Rota |
 |---|---|
-| **Hero** | 1ª — headline, tags, CTA |
-| **Trust Bar** | 2ª — prova social + logos |
-| **Seção de Vídeo** | 3ª — título, CTA, URL do vídeo |
+| GET | `/api/services`, `/api/projects?all=1`, `/api/projects/{slug}`, `/api/cases`, `/api/audiences`, `/api/testimonials` |
+| GET | `/api/globals/{hero\|trust-bar\|video-section\|home-page}` |
+| POST | `/api/proposals` — proposta enviada pelo site |
+| POST | `/api/public/proposals/{token}` — cliente abre/responde com a senha |
 
-## Markdown
+## Importar de novo do Payload
 
-Templates e textos prontos em `cms/content/`:
+```bash
+cd cms-laravel && php artisan cms:import-payload --fresh
+```
 
-- `templates/case.md` → Cases → **Texto completo (Markdown)**
-- `templates/proposta.md` → Propostas → **Mensagem para o cliente (Markdown)**
-- `cases/*.md` e `proposals/*.md` → exemplos para colar no admin
+Copia imagens, conteúdo, propostas (os links `/proposta/{token}` continuam válidos) e usuários.
+Os usuários do Payload entram com a mesma senha de antes; ela é convertida no primeiro login.
 
 ## Fluxo de propostas
 
 1. Cliente monta e envia no site → chega em **Propostas** (status Nova)
-2. Equipe formaliza no Payload (preço + Markdown)
-3. Status **Enviada** gera `accessToken`
-4. Cliente acessa `/proposta/{token}` com a senha
-5. Aceite / negociação volta para o Payload
-
-## Variáveis
-
-**Site**
-```
-VITE_API_URL=http://localhost:3000
-```
-
-**CMS (`cms/.env`)**
-```
-PAYLOAD_SECRET=...
-FRONTEND_URL=http://localhost:5173
-NEXT_PUBLIC_SERVER_URL=http://localhost:3000
-PROPOSAL_ACCESS_PASSWORD=nexo2026
-```
+2. Equipe formaliza no admin (preço + blocos de conteúdo)
+3. **Enviar ao cliente** (ou status Enviada) gera o link
+4. Cliente acessa `/proposta/{token}` com a senha (`PROPOSAL_ACCESS_PASSWORD`)
+5. Aceite / negociação volta para o admin

@@ -1,0 +1,208 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../app/Support/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+/* ------------------------------------------------------------------
+ * Nexo CMS — tema do admin
+ * Valores do site (src/index.css): Inter, ink #0a0a0a, roxo #8b5cf6.
+ * ------------------------------------------------------------------ */
+@theme {
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+}
+
+:root {
+    --nx-ink: #0a0a0a;
+    --nx-line: #e8e8e8;
+    --nx-surface: #fafafa;
+}
+
+.dark {
+    --nx-ink: #fafafa;
+    --nx-line: rgb(255 255 255 / 0.1);
+    --nx-surface: rgb(255 255 255 / 0.03);
+}
+
+/* Barra lateral: marca e item ativo com o roxo do site */
+.fi-sidebar-header {
+    @apply border-b border-gray-950/5 dark:border-white/10;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    @apply bg-primary-50 dark:bg-primary-400/10;
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-label,
+.fi-sidebar-item.fi-active .fi-icon {
+    @apply text-primary-700 dark:text-primary-300;
+}
+
+/* Login com o gradiente de destaque do site */
+.fi-simple-layout {
+    background:
+        radial-gradient(60rem 40rem at 10% -10%, rgb(139 92 246 / 0.14), transparent 60%),
+        radial-gradient(50rem 40rem at 110% 110%, rgb(79 110 247 / 0.12), transparent 60%);
+}
+
+.fi-simple-main {
+    @apply shadow-xl ring-1 ring-gray-950/5 dark:ring-white/10;
+}
+
+/* ---------------- Editor Markdown ---------------- */
+.nx-md {
+    @apply overflow-hidden rounded-lg bg-white ring-1 ring-gray-950/10 transition dark:bg-white/5 dark:ring-white/20;
+}
+
+.nx-md--focus {
+    @apply ring-2 ring-primary-600 dark:ring-primary-500;
+}
+
+.nx-md__toolbar {
+    @apply flex flex-wrap items-center gap-1 border-b border-gray-950/5 bg-gray-50 px-2 py-1.5 dark:border-white/10 dark:bg-white/5;
+}
+
+.nx-md__group {
+    @apply flex items-center gap-0.5;
+}
+
+.nx-md__sep {
+    @apply mx-1 h-5 w-px bg-gray-950/10 dark:bg-white/10;
+}
+
+.nx-md__btn {
+    @apply inline-flex h-7 min-w-7 items-center justify-center rounded-md px-1.5 text-sm text-gray-700 transition hover:bg-white hover:text-gray-950 hover:shadow-sm disabled:opacity-50 dark:text-gray-300 dark:hover:bg-white/10 dark:hover:text-white;
+}
+
+.nx-md__color {
+    @apply relative inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-md hover:bg-white dark:hover:bg-white/10;
+}
+
+.nx-md__color input {
+    @apply absolute inset-0 cursor-pointer opacity-0;
+}
+
+.nx-md__swatch {
+    @apply h-4 w-4 rounded-full ring-1 ring-gray-950/20 dark:ring-white/30;
+}
+
+.nx-md__size {
+    @apply flex items-center gap-1 text-xs text-gray-500;
+}
+
+.nx-md__size input {
+    @apply h-7 w-14 rounded-md border-0 bg-white px-2 text-xs text-gray-950 ring-1 ring-gray-950/10 focus:ring-2 focus:ring-primary-600 dark:bg-white/5 dark:text-white dark:ring-white/20;
+}
+
+.nx-md__modes {
+    @apply ms-auto flex rounded-md bg-gray-950/5 p-0.5 text-xs dark:bg-white/10;
+}
+
+.nx-md__modes button {
+    @apply rounded px-2 py-1 font-medium text-gray-500 transition hover:text-gray-950 dark:text-gray-400 dark:hover:text-white;
+}
+
+.nx-md__modes button.is-active {
+    @apply bg-white text-gray-950 shadow-sm dark:bg-gray-900 dark:text-white;
+}
+
+.nx-md__panes {
+    @apply grid;
+}
+
+.nx-md--split .nx-md__panes {
+    @apply md:grid-cols-2;
+}
+
+.nx-md--split .nx-md__preview {
+    @apply border-t border-gray-950/5 md:border-t-0 md:border-s dark:border-white/10;
+}
+
+.nx-md__input {
+    @apply block w-full resize-y border-0 bg-transparent px-3 py-2.5 font-mono text-[13px] leading-6 text-gray-950 placeholder:text-gray-400 focus:ring-0 dark:text-white;
+}
+
+.nx-md__footer {
+    @apply flex flex-wrap items-center justify-between gap-2 border-t border-gray-950/5 px-3 py-1.5 text-[11px] text-gray-400 dark:border-white/10;
+}
+
+/* Pré-visualização, espelhando .markdown-body do site */
+.markdown-preview {
+    @apply overflow-auto px-4 py-3 text-sm leading-relaxed text-gray-800 dark:text-gray-200;
+}
+
+.markdown-preview > * + * {
+    @apply mt-3;
+}
+
+.markdown-preview h1 {
+    @apply text-2xl font-bold tracking-tight text-gray-950 dark:text-white;
+}
+
+.markdown-preview h2 {
+    @apply text-xl font-bold tracking-tight text-gray-950 dark:text-white;
+}
+
+.markdown-preview h3 {
+    @apply text-base font-semibold text-gray-950 dark:text-white;
+}
+
+.markdown-preview em {
+    @apply font-serif text-[1.15em];
+}
+
+.markdown-preview strong {
+    @apply font-semibold text-gray-950 dark:text-white;
+}
+
+.markdown-preview ul {
+    @apply list-disc space-y-1 ps-5;
+}
+
+.markdown-preview blockquote {
+    @apply border-s-2 border-gray-300 ps-3 text-gray-500;
+}
+
+.markdown-preview code {
+    @apply rounded bg-gray-100 px-1 py-0.5 font-mono text-[0.85em] dark:bg-white/10;
+}
+
+.markdown-preview a {
+    @apply text-primary-600 underline underline-offset-2;
+}
+
+.markdown-preview .is-empty {
+    @apply text-gray-400 italic;
+}
+
+.markdown-preview.is-dark {
+    @apply bg-gray-950 text-white/80;
+}
+
+.markdown-preview.is-dark strong,
+.markdown-preview.is-dark h1,
+.markdown-preview.is-dark h2,
+.markdown-preview.is-dark h3 {
+    @apply text-white;
+}
+
+/* ---------------- Quadro de propostas (kanban) ---------------- */
+.nx-board {
+    @apply flex snap-x gap-4 overflow-x-auto pb-4;
+}
+
+.nx-col {
+    @apply flex w-72 shrink-0 snap-start flex-col rounded-xl bg-gray-100/70 ring-1 ring-gray-950/5 transition dark:bg-white/5 dark:ring-white/10;
+}
+
+.nx-col.is-over {
+    @apply bg-primary-50 ring-2 ring-primary-500 dark:bg-primary-500/10;
+}
+
+.nx-card {
+    @apply cursor-grab rounded-lg bg-white p-3 shadow-sm ring-1 ring-gray-950/5 transition hover:shadow-md hover:ring-gray-950/10 active:cursor-grabbing dark:bg-gray-900 dark:ring-white/10;
+}
+
+.nx-card.is-dragging {
+    @apply rotate-1 opacity-50;
+}
