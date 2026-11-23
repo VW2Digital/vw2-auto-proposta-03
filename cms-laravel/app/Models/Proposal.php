@@ -48,7 +48,7 @@ class Proposal extends Model
 
     protected static function booted(): void
     {
-        // Igual ao hook do Payload: ao virar "enviada", gera o link do cliente.
+        // Ao virar "enviada", gera o link do cliente.
         static::saving(function (Proposal $proposal) {
             if ($proposal->status === 'enviada' && ! $proposal->access_token) {
                 $proposal->access_token = (string) Str::uuid();

@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-/** Seleção de serviços na montagem da proposta (local). As propostas vão para o Payload. */
+/** Seleção de serviços na montagem da proposta (local). As propostas vão para o CMS. */
 export const useProposalStore = create(
   persist(
     (set, get) => ({

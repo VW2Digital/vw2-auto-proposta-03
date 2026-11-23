@@ -50,7 +50,7 @@ export default function Footer() {
               </a>
             </div>
             <a
-              href={`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/admin`}
+              href={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/admin`}
               className="mt-4 inline-block text-sm font-medium text-ink hover:underline"
             >
               Acessar CMS →

@@ -8,13 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // Senha herdada do Payload (pbkdf2). Convertida para bcrypt no primeiro login.
-            $table->string('legacy_salt')->nullable();
-            $table->text('legacy_hash')->nullable();
-            $table->string('password')->nullable()->change();
-        });
-
         Schema::create('media', function (Blueprint $table) {
             $table->id();
             $table->string('path');
@@ -132,8 +125,5 @@ return new class extends Migration
         Schema::dropIfExists('projects');
         Schema::dropIfExists('services');
         Schema::dropIfExists('media');
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['legacy_salt', 'legacy_hash']);
-        });
     }
 };

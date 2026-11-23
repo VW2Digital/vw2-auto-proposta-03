@@ -31,6 +31,23 @@
     }
 }
 
+/* Topo da sidebar: logo + botão de recolher, depois a busca */
+.fi-sidebar-header {
+    @apply h-14 px-4;
+}
+
+.fi-sidebar-header .fi-logo {
+    @apply ms-1;
+}
+
+.fi-sidebar-header-controls {
+    @apply px-3 after:hidden;
+}
+
+.fi-sidebar-header-controls .fi-input-wrp {
+    @apply h-9 bg-gray-50 shadow-none ring-gray-950/5 dark:bg-white/5;
+}
+
 .fi-sidebar-nav {
     @apply gap-y-4 px-3 py-4;
     scrollbar-width: thin;
@@ -117,6 +134,24 @@
 
 .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-group-btn {
     @apply hidden;
+}
+
+/* Rodapé: cartão do site e, por último, o usuário */
+.nx-sidebar-foot {
+    order: 1;
+}
+
+.fi-sidebar-footer {
+    order: 2;
+    @apply mx-0 mb-0 gap-y-0 border-t border-gray-950/5 px-3 py-2 dark:border-white/10;
+}
+
+.fi-sidebar-footer .fi-user-menu-trigger {
+    @apply w-full rounded-lg px-2 py-1.5 transition hover:bg-gray-950/[0.04] dark:hover:bg-white/5;
+}
+
+.fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-footer {
+    @apply px-2;
 }
 
 /* Rodapé (render hook: fica direto dentro da sidebar) */

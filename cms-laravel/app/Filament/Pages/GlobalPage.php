@@ -13,7 +13,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 
 /**
- * Página de edição de um conteúdo único do site (equivalente aos “globals” do Payload).
+ * Página de edição de um conteúdo único do site (Hero, Trust Bar, Vídeo, Home).
  *
  * @property-read Schema $form
  */

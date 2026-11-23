@@ -15,12 +15,6 @@ dist-ssr
 .env.*
 !.env.example
 
-# CMS
-cms/.next
-cms/data/*.db
-cms/media
-cms/node_modules
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

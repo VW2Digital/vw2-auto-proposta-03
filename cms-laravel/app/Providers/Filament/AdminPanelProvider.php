@@ -46,17 +46,18 @@ class AdminPanelProvider extends PanelProvider
                 'warning' => Color::Amber,
             ])
             ->font('Inter')
-            // O admin do Payload era sempre claro; o modo escuro fica disponível no menu do usuário.
+            // Abre no modo claro; o modo escuro fica disponível no menu do usuário.
             ->defaultThemeMode(ThemeMode::Light)
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->maxContentWidth(Width::SevenExtraLarge)
+            // Sem header: logo, busca e avatar do usuário ficam na sidebar.
+            ->topbar(false)
             ->sidebarCollapsibleOnDesktop()
             ->sidebarWidth('17rem')
             ->renderHook(PanelsRenderHook::SIDEBAR_FOOTER, fn () => view('filament.sidebar-footer'))
             ->spa()
             ->unsavedChangesAlerts()
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->globalSearchFieldSuffix(fn (): string => '⌘K')
             ->navigationGroups([
                 NavigationGroup::make('Comercial'),
                 NavigationGroup::make('Páginas'),

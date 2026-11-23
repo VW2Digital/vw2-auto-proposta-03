@@ -95,7 +95,7 @@ class CaseStudyResource extends BaseResource
                     ->collapsible()
                     ->schema([
                         MarkdownStudio::make('body')->hiddenLabel()->rows(18)
-                            ->helperText('Use o template em cms/content/templates/case.md. Markdown: títulos, listas, negrito.'),
+                            ->helperText('Use o template em content/templates/case.md. Markdown: títulos, listas, negrito.'),
                     ]),
             ])->columnSpan(['lg' => 2]),
             Group::make([

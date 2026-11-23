@@ -9,7 +9,7 @@ Landing React + plataforma de propostas. Todo o conteúdo é gerido no **Nexo CM
 | Site | React + Vite + Tailwind (`/`) |
 | CMS / Admin / API | Laravel 13 + Filament 5 (`cms-laravel/`) |
 | Banco (dev) | SQLite (`cms-laravel/database/database.sqlite`) |
-| Legado | Payload CMS (`cms/`) — só usado como origem da importação |
+| Textos-modelo | Markdown em `content/` |
 
 ## Como rodar
 
@@ -25,7 +25,7 @@ php artisan key:generate
 php artisan migrate
 php artisan storage:link
 php artisan filament:assets
-php artisan db:seed      # cria o admin e importa tudo do Payload (cms/data/nexo.db)
+php artisan db:seed      # cria o usuário admin (ADMIN_EMAIL / ADMIN_PASSWORD)
 ```
 
 ### Dia a dia
@@ -59,14 +59,9 @@ Extras: busca global (⌘K), modo escuro, editor Markdown com cor/tamanho e visu
 | POST | `/api/proposals` — proposta enviada pelo site |
 | POST | `/api/public/proposals/{token}` — cliente abre/responde com a senha |
 
-## Importar de novo do Payload
+## Textos-modelo
 
-```bash
-cd cms-laravel && php artisan cms:import-payload --fresh
-```
-
-Copia imagens, conteúdo, propostas (os links `/proposta/{token}` continuam válidos) e usuários.
-Os usuários do Payload entram com a mesma senha de antes; ela é convertida no primeiro login.
+Modelos em Markdown para cases, projetos e propostas ficam em [`content/`](content/README.md).
 
 ## Fluxo de propostas
 
