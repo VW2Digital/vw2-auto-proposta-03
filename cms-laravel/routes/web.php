@@ -1,6 +1,18 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+
+// Fallback para arquivos de mídia (/storage/...) quando hospedagem compartilhada
+// não tem symlink `public_html/storage` criado via SSH.
+Route::get('/storage/{path}', function (string $path) {
+    $disk = Storage::disk('public');
+    abort_unless($disk->exists($path), 404);
+
+    return $disk->response($path, null, [
+        'Cache-Control' => 'public, max-age=31536000',
+    ]);
+})->where('path', '.*');
 
 $serveSpa = function () {
     $spa = public_path('spa.html');
