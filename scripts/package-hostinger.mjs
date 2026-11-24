@@ -70,6 +70,17 @@ for (const dir of storageDirs) {
   fs.mkdirSync(path.join(outAppDir, dir), { recursive: true })
 }
 
+// 2b. Protege nexo-cms/ contra acesso web caso fique dentro de public_html/
+const denyHtaccess = `<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>
+`
+fs.writeFileSync(path.join(outAppDir, '.htaccess'), denyHtaccess, 'utf8')
+
 // 3. Copia tudo de cms-laravel/public/ para release-hostinger/public_html/ (exceto symlink local storage)
 for (const entry of fs.readdirSync(cmsPublicDir, { withFileTypes: true })) {
   if (entry.name === 'storage' || entry.name === 'hot' || entry.name === 'index.php') continue
@@ -79,7 +90,7 @@ for (const entry of fs.readdirSync(cmsPublicDir, { withFileTypes: true })) {
   })
 }
 
-// 4. Gera public_html/index.php apontando para ../nexo-cms/ (seguro em hospedagem compartilhada)
+// 4. Gera public_html/index.php suportando tanto ../nexo-cms quanto ./nexo-cms
 const hostingerIndexPhp = `<?php
 
 use Illuminate\\Foundation\\Application;
@@ -87,7 +98,9 @@ use Illuminate\\Http\\Request;
 
 define('LARAVEL_START', microtime(true));
 
-$appRoot = __DIR__.'/../nexo-cms';
+$appRoot = is_dir(__DIR__.'/../nexo-cms')
+    ? __DIR__.'/../nexo-cms'
+    : __DIR__.'/nexo-cms';
 
 if (file_exists($maintenance = $appRoot.'/storage/framework/maintenance.php')) {
     require $maintenance;

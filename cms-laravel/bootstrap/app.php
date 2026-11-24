@@ -22,10 +22,15 @@ $app = Application::configure(basePath: dirname(__DIR__))
         );
     })->create();
 
-// Suporte automático à estrutura da Hostinger compartilhada (nexo-cms/ ao lado de public_html/):
-// garante que public_path(), storage:link e filament:assets apontem para ../public_html.
-if (! is_dir(dirname(__DIR__).'/public') && is_dir(dirname(__DIR__).'/../public_html')) {
-    $app->usePublicPath(realpath(dirname(__DIR__).'/../public_html') ?: dirname(__DIR__).'/../public_html');
+// Suporte automático à estrutura da Hostinger compartilhada:
+// 1) nexo-cms/ ao lado de public_html/ (../public_html)
+// 2) nexo-cms/ dentro de public_html/ (..)
+if (! is_dir(dirname(__DIR__).'/public')) {
+    if (is_dir(dirname(__DIR__).'/../public_html')) {
+        $app->usePublicPath(realpath(dirname(__DIR__).'/../public_html') ?: dirname(__DIR__).'/../public_html');
+    } elseif (is_file(dirname(__DIR__).'/../index.php') && is_file(dirname(__DIR__).'/../spa.html')) {
+        $app->usePublicPath(realpath(dirname(__DIR__).'/..') ?: dirname(__DIR__).'/..');
+    }
 }
 
 return $app;
