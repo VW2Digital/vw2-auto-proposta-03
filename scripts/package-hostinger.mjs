@@ -67,7 +67,9 @@ const storageDirs = [
   'bootstrap/cache',
 ]
 for (const dir of storageDirs) {
-  fs.mkdirSync(path.join(outAppDir, dir), { recursive: true })
+  const fullDir = path.join(outAppDir, dir)
+  fs.mkdirSync(fullDir, { recursive: true })
+  fs.writeFileSync(path.join(fullDir, '.gitkeep'), '', 'utf8')
 }
 
 // 2b. Protege nexo-cms/ contra acesso web caso fique dentro de public_html/
