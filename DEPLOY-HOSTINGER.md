@@ -2,15 +2,15 @@
 
 Nesta arquitetura (**Opção 1 — Domínio Único Unificado**), site React, API e painel admin rodam no **mesmo domínio**:
 
-- `https://seudominio.com.br/` · `/projetos` · `/cases` · `/proposta/{token}` → **Site React**
-- `https://seudominio.com.br/admin` → **Painel Filament**
-- `https://seudominio.com.br/api/*` → **API JSON (mesma origem, sem CORS)**
-- `https://seudominio.com.br/storage/*` → **Uploads de mídia**
+- `https://vw2digital.com.br/` · `/projetos` · `/cases` · `/proposta/{token}` → **Site React**
+- `https://vw2digital.com.br/admin` → **Painel Filament**
+- `https://vw2digital.com.br/api/*` → **API JSON (mesma origem, sem CORS)**
+- `https://vw2digital.com.br/storage/*` → **Uploads de mídia**
 
 E o código Laravel + `.env` ficam **fora do `public_html/`** por segurança:
 
 ```text
-domains/seudominio.com.br/
+domains/vw2digital.com.br/
 ├── nexo-cms/        # Laravel (app, config, vendor, storage, .env) — privado
 └── public_html/     # index.php, .htaccess, spa.html, assets/, build/, js/, css/, storage -> symlink
 ```
@@ -54,22 +54,22 @@ Isso cria a pasta `release-hostinger/` pronta para a Hostinger:
 Via **Gerenciador de Arquivos do hPanel** (compactando cada pasta em `.zip`) ou via **SFTP**:
 
 1. Suba a pasta `release-hostinger/nexo-cms` para:
-   `domains/seudominio.com.br/nexo-cms`
+   `domains/vw2digital.com.br/nexo-cms`
 2. Suba **o conteúdo** de `release-hostinger/public_html/` (incluindo o arquivo oculto `.htaccess`) para:
-   `domains/seudominio.com.br/public_html/`
+   `domains/vw2digital.com.br/public_html/`
 
 ---
 
 ## 4. Preencher as credenciais no `.env`
 
-Dentro de `domains/seudominio.com.br/nexo-cms/`:
+Dentro de `domains/vw2digital.com.br/nexo-cms/`:
 
 1. Renomeie (ou copie) `.env.production.example` para `.env`.
 2. Preencha os campos `<< ... >>` com suas credenciais:
 
 | Variável | Valor na Hostinger |
 |---|---|
-| `APP_URL` | `https://seudominio.com.br` |
+| `APP_URL` | `https://vw2digital.com.br` |
 | `DB_CONNECTION` | `mysql` |
 | `DB_HOST` | `127.0.0.1` (ou `localhost`) |
 | `DB_PORT` | `3306` |
@@ -84,7 +84,7 @@ Dentro de `domains/seudominio.com.br/nexo-cms/`:
 
 ## 5. Finalizar no servidor (SSH do hPanel)
 
-Acesse o terminal SSH em `domains/seudominio.com.br/nexo-cms` e rode:
+Acesse o terminal SSH em `domains/vw2digital.com.br/nexo-cms` e rode:
 
 ```bash
 composer install --no-dev --optimize-autoloader
@@ -103,9 +103,9 @@ php artisan filament:optimize
 
 ## 6. Checklist pós-deploy
 
-- [ ] `https://seudominio.com.br/` abre o site React
-- [ ] `https://seudominio.com.br/projetos` e `/cases` funcionam ao recarregar (sem 404)
-- [ ] `https://seudominio.com.br/up` responde `200 OK`
-- [ ] `https://seudominio.com.br/admin` abre o login estilizado e autentica com `ADMIN_EMAIL` / `ADMIN_PASSWORD`
-- [ ] Upload na **Biblioteca de mídia** aparece acessível em `https://seudominio.com.br/storage/...`
+- [ ] `https://vw2digital.com.br/` abre o site React
+- [ ] `https://vw2digital.com.br/projetos` e `/cases` funcionam ao recarregar (sem 404)
+- [ ] `https://vw2digital.com.br/up` responde `200 OK`
+- [ ] `https://vw2digital.com.br/admin` abre o login estilizado e autentica com `ADMIN_EMAIL` / `ADMIN_PASSWORD`
+- [ ] Upload na **Biblioteca de mídia** aparece acessível em `https://vw2digital.com.br/storage/...`
 - [ ] A pré-visualização dentro do admin abre o próprio domínio sem bloqueio

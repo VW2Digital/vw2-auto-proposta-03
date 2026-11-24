@@ -104,5 +104,5 @@ $app->handleRequest(Request::capture());
 fs.writeFileSync(path.join(outPublicHtmlDir, 'index.php'), hostingerIndexPhp, 'utf8')
 
 console.log('✓ Pacote Hostinger gerado em release-hostinger/')
-console.log('  ├── nexo-cms/     -> subir para domains/seudominio.com.br/nexo-cms')
-console.log('  └── public_html/  -> subir conteúdo para domains/seudominio.com.br/public_html')
+console.log('  ├── nexo-cms/     -> subir para domains/vw2digital.com.br/nexo-cms')
+console.log('  └── public_html/  -> subir conteúdo para domains/vw2digital.com.br/public_html')
