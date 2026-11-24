@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Mail, Phone, Share2, Globe } from 'lucide-react'
 import Logo from './Logo'
+import { cms } from '../lib/cms'
 
 export default function Footer() {
   return (
@@ -50,7 +51,7 @@ export default function Footer() {
               </a>
             </div>
             <a
-              href={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/admin`}
+              href={cms.adminUrl}
               className="mt-4 inline-block text-sm font-medium text-ink hover:underline"
             >
               Acessar CMS →

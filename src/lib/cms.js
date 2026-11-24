@@ -3,7 +3,14 @@
  * A API já entrega os dados no formato usado pelos componentes:
  * camelCase, URLs de imagem absolutas e blocos com `blockType`.
  */
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '')
+const rawApiUrl = import.meta.env.VITE_API_URL
+const API_URL = (
+  rawApiUrl !== undefined
+    ? rawApiUrl
+    : import.meta.env.PROD
+      ? ''
+      : 'http://localhost:8000'
+).replace(/\/$/, '')
 
 async function api(path, options = {}) {
   const res = await fetch(`${API_URL}/api${path}`, {

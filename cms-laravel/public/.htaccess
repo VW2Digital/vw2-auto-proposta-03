@@ -5,6 +5,15 @@
 
     RewriteEngine On
 
+    # Bloqueia acesso direto a arquivos ocultos (.env, .git, etc.)
+    RewriteRule (^|/)\. - [F,L]
+
+    # Redireciona HTTP para HTTPS em produção (Hostinger / LiteSpeed), ignorando localhost
+    RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:[0-9]+)?$ [NC]
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Logo from './Logo'
+import { cms } from '../lib/cms'
 
 const navLinks = [
   { href: '#quem-ajudamos', label: 'Quem ajudamos', homeOnly: true },
@@ -124,7 +125,7 @@ export default function Header() {
                   )
                 })}
                 <a
-                  href={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/admin`}
+                  href={cms.adminUrl}
                   onClick={() => setOpen(false)}
                   className="block rounded-2xl px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-surface"
                 >

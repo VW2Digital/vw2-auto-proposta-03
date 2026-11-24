@@ -1,107 +1,111 @@
-# Deploy em Produção — Hostinger (MySQL / phpMyAdmin)
+# Deploy na Hospedagem Compartilhada Hostinger (Domínio Único + MySQL / phpMyAdmin)
 
-Este projeto é composto por duas camadas:
+Nesta arquitetura (**Opção 1 — Domínio Único Unificado**), site React, API e painel admin rodam no **mesmo domínio**:
 
-1. **Site React (estático em `dist/`)** — ex.: `https://seudominio.com.br`
-2. **CMS + Admin Laravel/Filament (`cms-laravel/`)** — ex.: `https://cms.seudominio.com.br` (painel em `/admin` e API em `/api/*`)
+- `https://seudominio.com.br/` · `/projetos` · `/cases` · `/proposta/{token}` → **Site React**
+- `https://seudominio.com.br/admin` → **Painel Filament**
+- `https://seudominio.com.br/api/*` → **API JSON (mesma origem, sem CORS)**
+- `https://seudominio.com.br/storage/*` → **Uploads de mídia**
+
+E o código Laravel + `.env` ficam **fora do `public_html/`** por segurança:
+
+```text
+domains/seudominio.com.br/
+├── nexo-cms/        # Laravel (app, config, vendor, storage, .env) — privado
+└── public_html/     # index.php, .htaccess, spa.html, assets/, build/, js/, css/, storage -> symlink
+```
 
 ---
 
-## 1. Criar o banco MySQL na Hostinger
+## 1. Preparar o banco MySQL na Hostinger (hPanel + phpMyAdmin)
 
-1. Acesse o **hPanel → Bancos de Dados → Gerenciamento**.
-2. Crie um novo banco MySQL (anote **Nome do banco**, **Usuário** e **Senha** — na Hostinger geralmente começam com `u000000000_...`).
-3. Confira a versão do PHP do domínio/subdomínio em **hPanel → Avançado → Configuração do PHP** e selecione **PHP 8.3** ou **PHP 8.4** com as extensões `pdo_mysql`, `intl`, `gd`, `mbstring`, `zip`, `fileinfo` ativadas.
+1. No **hPanel → Bancos de Dados → Gerenciamento**, crie um novo banco MySQL e anote:
+   - **Nome do banco** (`DB_DATABASE`, ex.: `u123456789_nexo`)
+   - **Usuário** (`DB_USERNAME`, ex.: `u123456789_nexo_user`)
+   - **Senha** (`DB_PASSWORD`)
+2. Em **hPanel → Avançado → Configuração do PHP**, selecione **PHP 8.3** ou **PHP 8.4** e confirme as extensões `pdo_mysql`, `intl`, `gd`, `mbstring`, `zip` e `fileinfo`.
+3. **(Opcional — via phpMyAdmin sem SSH para criar tabelas):**
+   - Clique em **Entrar no phpMyAdmin** no banco criado.
+   - Vá na aba **Importar**, selecione o arquivo `cms-laravel/database/schema-mysql-hostinger.sql` e clique em **Executar**.
+   - Todas as tabelas (`users`, `sessions`, `cache`, `jobs`, `services`, `projects`, `case_studies`, `audiences`, `testimonials`, `proposals`, `media`, `site_globals`, `migrations`) serão criadas em `InnoDB / utf8mb4_unicode_ci`.
 
 ---
 
-## 2. Preencher as credenciais de produção
+## 2. Gerar o pacote pronto para upload (`release-hostinger/`)
 
-### A) CMS Laravel (`cms-laravel/.env`)
+No seu computador, a partir da raiz do projeto:
 
-Copie `cms-laravel/.env.production.example` para `cms-laravel/.env` e preencha os campos marcados com `<< ... >>`:
+```bash
+# 1. Compila o tema do Filament (se ainda não estiver compilado em cms-laravel/public/build)
+docker compose run --rm cms npm run build
 
-| Variável | Onde encontrar na Hostinger / valor |
+# 2. Compila o site React, sincroniza no Laravel e gera a pasta release-hostinger/
+npm run build:hostinger
+```
+
+Isso cria a pasta `release-hostinger/` pronta para a Hostinger:
+- `release-hostinger/nexo-cms/` (sem `database.sqlite`, sem caches locais, sem `public/`)
+- `release-hostinger/public_html/` (com `index.php` já configurado para `../nexo-cms/`, `.htaccess` com HTTPS, `spa.html`, `assets/` do React e `build/` + `js/` + `css/` do Filament)
+
+---
+
+## 3. Subir os arquivos para a Hostinger
+
+Via **Gerenciador de Arquivos do hPanel** (compactando cada pasta em `.zip`) ou via **SFTP**:
+
+1. Suba a pasta `release-hostinger/nexo-cms` para:
+   `domains/seudominio.com.br/nexo-cms`
+2. Suba **o conteúdo** de `release-hostinger/public_html/` (incluindo o arquivo oculto `.htaccess`) para:
+   `domains/seudominio.com.br/public_html/`
+
+---
+
+## 4. Preencher as credenciais no `.env`
+
+Dentro de `domains/seudominio.com.br/nexo-cms/`:
+
+1. Renomeie (ou copie) `.env.production.example` para `.env`.
+2. Preencha os campos `<< ... >>` com suas credenciais:
+
+| Variável | Valor na Hostinger |
 |---|---|
-| `APP_URL` | URL do CMS (ex.: `https://cms.seudominio.com.br`) |
+| `APP_URL` | `https://seudominio.com.br` |
 | `DB_CONNECTION` | `mysql` |
-| `DB_HOST` | `127.0.0.1` (na mesma hospedagem) ou o host de **MySQL Remoto** (ex.: `srvXXXX.hstgr.io`) |
+| `DB_HOST` | `127.0.0.1` (ou `localhost`) |
 | `DB_PORT` | `3306` |
 | `DB_DATABASE` | Nome do banco criado no hPanel / phpMyAdmin |
 | `DB_USERNAME` | Usuário do banco criado no hPanel |
 | `DB_PASSWORD` | Senha do banco |
-| `FRONTEND_URL` | URL do site React (ex.: `https://seudominio.com.br`) |
-| `CORS_ALLOWED_ORIGINS` | Domínios do site separados por vírgula (ex.: `https://seudominio.com.br,https://www.seudominio.com.br`) |
-| `PROPOSAL_ACCESS_PASSWORD` | Senha que o cliente usa para abrir `/proposta/{token}` |
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Login do usuário admin inicial |
-| `MAIL_*` | Dados SMTP da Hostinger (`smtp.hostinger.com`, porta `465`, `smtps`) |
-
-### B) Site React (`.env.production` na raiz)
-
-Copie `.env.production.example` para `.env.production` na raiz e ajuste:
-
-```env
-VITE_API_URL=https://cms.seudominio.com.br
-```
+| `PROPOSAL_ACCESS_PASSWORD` | Senha para clientes abrirem `/proposta/{token}` |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Login inicial do `/admin` |
+| `MAIL_*` | SMTP da Hostinger (`smtp.hostinger.com`, porta `465`, `smtps`) |
 
 ---
 
-## 3. Gerar os builds de produção
+## 5. Finalizar no servidor (SSH do hPanel)
 
-Na raiz do projeto (antes de enviar para o servidor):
-
-```bash
-npm run build
-npm run build:cms
-```
-
-- O site compilado fica em `dist/` (já incluindo o `dist/.htaccess` para rotas do React Router).
-- O tema compilado do admin fica em `cms-laravel/public/build/`.
-
----
-
-## 4. Subir os arquivos na Hostinger
-
-### Site React (`https://seudominio.com.br`)
-- Envie **todo o conteúdo de `dist/`** (incluindo o arquivo oculto `.htaccess`) para o `public_html/` do domínio principal.
-
-### CMS Laravel (`https://cms.seudominio.com.br`)
-1. Crie um subdomínio (ex.: `cms.seudominio.com.br`) no hPanel e configure o diretório raiz dele (ou aponte o subdomínio) para a pasta `cms-laravel/public`.
-2. Envie a pasta `cms-laravel/` (com `cms-laravel/.env` já preenchido e sem o `database.sqlite` local).
-3. Garanta permissão de escrita em `cms-laravel/storage` e `cms-laravel/bootstrap/cache`.
-
----
-
-## 5. Criar tabelas no MySQL (via SSH ou phpMyAdmin)
-
-### Opção A — Via SSH (recomendado)
-
-Conecte via SSH na Hostinger, entre na pasta `cms-laravel` e rode:
+Acesse o terminal SSH em `domains/seudominio.com.br/nexo-cms` e rode:
 
 ```bash
 composer install --no-dev --optimize-autoloader
 php artisan key:generate --force
 php artisan migrate --force
 php artisan storage:link
-php artisan filament:assets
 php artisan db:seed --force
 php artisan optimize
 php artisan filament:optimize
 ```
 
-### Opção B — Via phpMyAdmin (sem rodar migrate)
-
-1. Abra o **phpMyAdmin** pelo hPanel e selecione o banco criado.
-2. Vá na aba **Importar**, selecione `cms-laravel/database/schema-mysql-hostinger.sql` e clique em **Executar**.
-3. Depois, no SSH (ou terminal do hPanel), execute `php artisan key:generate --force`, `php artisan storage:link`, `php artisan db:seed --force` e `php artisan optimize`.
+> **Dica:** como `bootstrap/app.php` detecta automaticamente `../public_html` quando `nexo-cms/public` não existe, o `php artisan storage:link` já cria o link simbólico diretamente em `public_html/storage`!
+> Se você já importou `schema-mysql-hostinger.sql` no **phpMyAdmin**, o `php artisan migrate --force` simplesmente reconhecerá que todas as migrations já estão registradas (`Nothing to migrate`).
 
 ---
 
 ## 6. Checklist pós-deploy
 
-- [ ] `https://cms.seudominio.com.br/up` responde `200 OK`
-- [ ] `https://cms.seudominio.com.br/admin` abre a tela de login estilizada (sem erros de CSS/JS)
-- [ ] Login funciona com `ADMIN_EMAIL` / `ADMIN_PASSWORD`
-- [ ] Upload de imagem na **Biblioteca de mídia** salva e exibe a URL com `https://`
-- [ ] `https://seudominio.com.br` carrega os dados vindos da API sem erro de CORS no console
-- [ ] Recarregar `https://seudominio.com.br/projetos` ou `/cases` abre normalmente sem 404
+- [ ] `https://seudominio.com.br/` abre o site React
+- [ ] `https://seudominio.com.br/projetos` e `/cases` funcionam ao recarregar (sem 404)
+- [ ] `https://seudominio.com.br/up` responde `200 OK`
+- [ ] `https://seudominio.com.br/admin` abre o login estilizado e autentica com `ADMIN_EMAIL` / `ADMIN_PASSWORD`
+- [ ] Upload na **Biblioteca de mídia** aparece acessível em `https://seudominio.com.br/storage/...`
+- [ ] A pré-visualização dentro do admin abre o próprio domínio sem bloqueio

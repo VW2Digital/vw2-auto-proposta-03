@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "vite",
     "dev:cms": "php cms-laravel/artisan serve --port=8000",
-    "build": "vite build",
+    "build": "vite build && node scripts/sync-spa-to-cms.mjs",
+    "build:cms": "npm run build --prefix cms-laravel",
+    "build:hostinger": "vite build && node scripts/sync-spa-to-cms.mjs && node scripts/package-hostinger.mjs",
     "lint": "oxlint",
-    "preview": "vite preview",
-    "build:cms": "npm run build --prefix cms-laravel"
+    "preview": "vite preview"
   },
   "dependencies": {
     "framer-motion": "^12.43.0",
