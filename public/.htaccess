@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Redireciona HTTP para HTTPS em produção (Hostinger / LiteSpeed / Apache)
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Se o arquivo ou diretório existir fisicamente, serve direto
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Demais rotas vão para o SPA React (/projetos, /cases, /proposta/:token, etc.)
+    RewriteRule ^ index.html [L]
+</IfModule>

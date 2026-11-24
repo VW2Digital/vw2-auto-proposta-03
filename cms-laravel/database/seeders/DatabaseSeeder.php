@@ -9,11 +9,14 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Admin local (ADMIN_EMAIL / ADMIN_PASSWORD no .env).
-        if (env('ADMIN_EMAIL') && env('ADMIN_PASSWORD')) {
+        // Admin local/inicial (ADMIN_EMAIL / ADMIN_PASSWORD no .env).
+        $email = config('cms.admin_email') ?: env('ADMIN_EMAIL');
+        $password = config('cms.admin_password') ?: env('ADMIN_PASSWORD');
+
+        if ($email && $password) {
             User::query()->updateOrCreate(
-                ['email' => env('ADMIN_EMAIL')],
-                ['name' => 'Admin', 'password' => env('ADMIN_PASSWORD')],
+                ['email' => $email],
+                ['name' => 'Admin', 'password' => $password],
             );
         }
     }

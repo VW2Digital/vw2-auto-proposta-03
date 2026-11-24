@@ -1,0 +1,15 @@
+services:
+  cms:
+    build:
+      context: ./cms-laravel
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./cms-laravel:/app
+      - cms_vendor:/app/vendor
+      - cms_node_modules:/app/node_modules
+    working_dir: /app
+
+volumes:
+  cms_vendor:
+  cms_node_modules:
